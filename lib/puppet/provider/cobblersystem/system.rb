@@ -30,6 +30,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :ensure         => :present,
         :profile        => member['profile'],
         :interfaces     => inet_hash,
+        :kernel_options => member['kernel_options'],
         :hostname       => member['hostname'],
         :gateway        => member['gateway'],
         :netboot        => member['netboot_enabled'].to_s,
@@ -92,8 +93,11 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     xmlrpcresult.each do |member|
       currentsystem = member if member['name'] == @resource[:name]
     end
+    # generate tmp string for interface name
+    o =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+    puppet_iface =  'tmp_' + (0...15).map{ o[rand(o.length)] }.join
     # add temp interface
-    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--static=true')
+    cobbler('system', 'edit', namearg, "--interface=#{puppet_iface}", '--static=true')
     # delete all other intefraces
     currentsystem['interfaces'].each do |iface_name,iface_settings|
       cobbler('system', 'edit', namearg, '--interface=' + iface_name, '--delete-interface')
@@ -118,9 +122,34 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     end
 
     # remove temp interface
-    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--delete-interface')
+    cobbler('system', 'edit', namearg, "--interface=#{puppet_iface}", '--delete-interface')
 
     @property_hash[:interfaces]=(value)
+  end
+
+  # sets kernel_options
+  def kernel_options=(value)
+    # name argument for cobbler
+    namearg='--name=' + @resource[:name]
+
+    # construct commandline from value hash
+    cobblerargs='system edit --name=' + @resource[:name]
+    cobblerargs=cobblerargs.split(' ')
+    # set up kernel options
+    kopts_value = []
+    # if value is ~, that means key is standalone option
+    value.each do |key,val|
+      if val=="~"
+        kopts_value << "#{key}"
+      else
+        kopts_value << "#{key}=#{val}" unless val=="~"
+      end
+    end
+    cobblerargs << ('--kopts=' + kopts_value * ' ')
+    # finally run command to set value
+    cobbler(cobblerargs)
+    # update property_hash
+    @property_hash[:kernel_options]=(value)
   end
 
   # sets comment
@@ -134,11 +163,12 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     cobbler('system', 'add', '--name=' + @resource[:name], '--profile=' + @resource[:profile])
 
     # add hostname, gateway, interfaces, netboot
-    self.hostname   = @resource.should(:hostname)   unless self.hostname   == @resource.should(:hostname)
-    self.gateway    = @resource.should(:gateway)    unless self.gateway    == @resource.should(:gateway)
-    self.interfaces = @resource.should(:interfaces) unless self.interfaces == @resource.should(:interfaces)
-    self.netboot    = @resource.should(:netboot)    unless self.netboot    == @resource.should(:netboot)
-    self.comment    = @resource.should(:comment)    unless self.comment    == @resource.should(:comment)
+    self.hostname       = @resource.should(:hostname)       unless self.hostname       == @resource.should(:hostname)
+    self.gateway        = @resource.should(:gateway)        unless self.gateway        == @resource.should(:gateway)
+    self.interfaces     = @resource.should(:interfaces)     unless self.interfaces     == @resource.should(:interfaces)
+    self.netboot        = @resource.should(:netboot)        unless self.netboot        == @resource.should(:netboot)
+    self.comment        = @resource.should(:comment)        unless self.comment        == @resource.should(:comment)
+    self.kernel_options = @resource.should(:kernel_options) unless self.kernel_options == @resource.should(:kernel_options)
 
     # sync state
     cobbler('sync')

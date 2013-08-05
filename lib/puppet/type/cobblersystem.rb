@@ -4,21 +4,27 @@ Puppet::Type.newtype(:cobblersystem) do
 A typical rule will look like this:
 
 cobblersystem { 'test.domain.com':
-  ensure     => present,
-  profile    => 'CentOS-6.3-x86_64',
-  interfaces => { 'eth0' => {
-                    mac_address => '90:B1:1C:06:BF:56',
-                    static      => true,
-                    management  => true,
-                    ip_address  => '10.8.16.53',
-                    netmask     => '255.255.255.0', 
-                    dns_name    => 'test.domain.com', 
-                  },
-                },
-  gateway    => '10.8.16.51',
-  hostname   => 'test.domain.com',
-  netboot    => false,
-  comment    => 'my system description',
+  ensure         => present,
+  profile        => 'CentOS-6.3-x86_64',
+  interfaces     => { 
+    'eth0' => {
+      mac_address => '90:B1:1C:06:BF:56',
+      static      => true,
+      management  => true,
+      ip_address  => '10.8.16.53',
+      netmask     => '255.255.255.0',
+      dns_name    => 'test.domain.com',
+    },
+  },
+  kernel_options => {
+    kssendmac => '~',
+    noacpi    => '~',
+    selinux   => 'permissive',
+  },
+  gateway        => '10.8.16.51',
+  hostname       => 'test.domain.com',
+  netboot        => false,
+  comment        => 'my system description',
 }
 
 "
@@ -54,7 +60,10 @@ cobblersystem { 'test.domain.com':
         if w.is_a?(Hash)
           # hack for 'management' setting (which is being read all the time)
           should[l]['management'] = false unless should[l].has_key?('management')
-          return false unless w.keys.sort == should[l].keys.sort
+          # check every key in puppet manifest, leave the rest
+          should[l].keys.uniq do |to, key|
+            return false unless to[key] == w[key]
+          end
         end
       end
       # if some setting changed in manifest, return false
@@ -77,6 +86,33 @@ cobblersystem { 'test.domain.com':
     def is_to_s(currentvalue)
       currentvalue.inspect
     end 
+  end 
+
+  newproperty(:kernel_options) do
+    desc "Kernel options for installation boot."
+    defaultto Hash.new
+
+    def insync?(is)
+      # @should is an Array. see lib/puppet/type.rb insync?
+      should = @should.first
+
+      # if members of hashes are not the same, something
+      # was added or removed from manifest, so return false
+      return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
+      # check if values of hash keys are equal
+      is.each do |l,w|
+        return false unless w == should[l]
+      end
+      true
+    end
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    def is_to_s(currentvalue)
+      currentvalue.inspect
+    end
   end 
 
   newproperty(:gateway) do

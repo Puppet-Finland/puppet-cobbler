@@ -36,6 +36,18 @@ download link of ISO image and distro name:
       isolink => 'http://mi.mirror.garr.it/mirrors/CentOS/6.3/isos/x86_64/CentOS-6.3-x86_64-bin-DVD1.iso',
     }
 
+If you want to use 'cobbler import', you can add a distro other way:
+
+    cobblerdistro { 'SL-6.4-x86_64':
+      ensure  => present,
+      path    => '/distro/SL64/x86_64/os',
+      ks_meta => {
+       'tree' => 'http://repos.theory.phys.ucl.ac.uk/mirrors/SL/6.4/x86_64/os',
+      },
+    }
+
+ks_meta's parameter's 'tree' value is used as '--available-as' option.
+
 Repos example:
 
     cobblerrepo { 'PuppetLabs-6-x86_64-deps':

@@ -52,6 +52,13 @@ Puppet::Type.type(:cobblerrepo).provide(:repo) do
     cobbler('reposync')
   end
 
+  # set priority
+  def priority=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--priority=' + value)
+    @property_hash[:priority]=(value)
+    cobbler('reposync')
+  end
+
   # mirror locally repository or not
   def mirror_locally=(value)
     cobbler('repo', 'edit', '--name=' + @resource[:name], '--mirror-locally=' + value.to_s)
@@ -76,7 +83,7 @@ Puppet::Type.type(:cobblerrepo).provide(:repo) do
     raise ArgumentError, 'mirror of the repository must be specified!' if @resource[:mirror].nil? 
     
     # create cobblerargs variable
-    cobblerargs = 'repo add --name=' + @resource[:name] + ' --mirror=' + @resource[:mirror]
+    cobblerargs = 'repo add --name=' + @resource[:name] + ' --mirror=' + @resource[:mirror] + ' --mirror-locally=' + @resource[:mirror_locally].to_s
     
     # turn string into array
     cobblerargs = cobblerargs.split(' ')
