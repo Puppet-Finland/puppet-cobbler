@@ -104,6 +104,7 @@ class cobbler (
   $purge_profile      = $::cobbler::params::purge_profile,
   $purge_system       = $::cobbler::params::purge_system,
   $default_kickstart  = $::cobbler::params::default_kickstart,
+  $default_webroot    = $::cobbler::params::default_webroot,
   $auth_module        = $::cobbler::params::auth_module
 ) inherits cobbler::params {
 
