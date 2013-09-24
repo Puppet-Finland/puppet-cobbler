@@ -109,9 +109,10 @@ class cobbler (
 ) inherits cobbler::params {
 
   # require apache modules
-  require apache::mod::wsgi
-  require apache::mod::proxy
-  require apache::mod::proxy_http
+  require ::apache
+  require ::apache::mod::wsgi
+  require ::apache::mod::proxy
+  require ::apache::mod::proxy_http
 
   # install section
   package { $::cobbler::params::tftp_package:     ensure => present, }
