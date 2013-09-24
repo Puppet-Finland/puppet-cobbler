@@ -35,7 +35,8 @@ class cobbler::params {
   }
   $package_ensure = 'present'
 
-  $default_webroot = '/var/www/cobbler'
+  # location of the cobbler web root
+  $webroot = '/var/www/cobbler'
 
   # general settings
   $next_server_ip = $::ipaddress

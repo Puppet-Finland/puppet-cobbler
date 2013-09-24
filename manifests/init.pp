@@ -70,9 +70,15 @@
 #     repo, profiles and systems which are not managed by puppet.
 #     Default is true.
 #
+#   - default_kickstart [type: string]
+#     Location of the default kickstart. Default depends on $::osfamily.
+#
+#   - webroot [type: string]
+#     Location of Cobbler's web root. Default: '/var/www/cobbler'.
+#
 # Actions:
-#   - Install Apache
-#   - Manage Apache service
+#   - Install Cobbler
+#   - Manage Cobbler service
 #
 # Requires:
 #   - puppetlabs/apache class
@@ -104,7 +110,7 @@ class cobbler (
   $purge_profile      = $::cobbler::params::purge_profile,
   $purge_system       = $::cobbler::params::purge_system,
   $default_kickstart  = $::cobbler::params::default_kickstart,
-  $default_webroot    = $::cobbler::params::default_webroot,
+  $webroot            = $::cobbler::params::webroot,
   $auth_module        = $::cobbler::params::auth_module
 ) inherits cobbler::params {
 

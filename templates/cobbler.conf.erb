@@ -1,15 +1,15 @@
 # This configuration file allows cobbler data
 # to be accessed over HTTP.
 
-AliasMatch ^/cblr(?!/svc/)(.*)?$ "<%= @default_webroot -%>$1"
-AliasMatch ^/cobbler_track(.*)?$ "<%= @default_webroot -%>$1"
-#AliasMatch ^/cobbler(.*)?$ "<%= @default_webroot -%>$1"
-Alias /cobbler <%= @default_webroot -%>
-Alias /cobbler_webui_content <%= @default_webroot -%>_webui_content
+AliasMatch ^/cblr(?!/svc/)(.*)?$ "<%= @webroot -%>$1"
+AliasMatch ^/cobbler_track(.*)?$ "<%= @webroot -%>$1"
+#AliasMatch ^/cobbler(.*)?$ "<%= @webroot -%>$1"
+Alias /cobbler <%= @webroot -%>
+Alias /cobbler_webui_content <%= @webroot -%>_webui_content
 
-WSGIScriptAliasMatch ^/cblr/svc/([^/]*) <%= @default_webroot -%>/svc/services.py
+WSGIScriptAliasMatch ^/cblr/svc/([^/]*) <%= @webroot -%>/svc/services.py
 
-<Directory "<%= @default_webroot -%>">
+<Directory "<%= @webroot -%>">
     Options Indexes FollowSymLinks
     Order allow,deny
     Allow from all
@@ -26,7 +26,7 @@ BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
 # and is visited at http://.../cobbler_web not this URL.
 # this is only a pointer to the new page.
 
-<Directory "<%= @default_webroot -%>/web/">
+<Directory "<%= @webroot -%>/web/">
     Options Indexes FollowSymLinks
     Order allow,deny
     Allow from all
