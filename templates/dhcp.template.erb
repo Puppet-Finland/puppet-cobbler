@@ -31,14 +31,35 @@ else
    puts("127.0.0.1")
 end %>;
     option routers              <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.1;
-    filename                    "/pxelinux.0";<% if dhcp_dynamic_range == 1 then %>
+    filename                    "/pxelinux.0";<% if @dhcp_dynamic_range == 1 then %>
     range dynamic-bootp         <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.100 <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.200;<% end %>
     default-lease-time          21600;
     max-lease-time              43200;
     next-server                 $next_server;
 }
 <% end -%>
-
+<% if @dhcp_subnets != '' -%>
+<% @dhcp_subnets.each do |dhcp_subnet| -%>
+<% dhcp_subnet_split   = dhcp_subnet.split('/') -%>
+subnet <%= dhcp_subnet_split[0] %> netmask <%= dhcp_subnet_split[1] %> {
+    option domain-name          "<%= @domain %>";
+    option subnet-mask          <%= dhcp_subnet_split[1]%>;
+    option domain-name-servers  <%=
+if @nameservers.kind_of?(Array)
+   @nameservers.join(", ")
+elsif (@nameservers.kind_of?(String) && @nameservers != '' )
+   @nameservers
+else
+   puts("127.0.0.1")
+end %>;
+    option routers              <%= dhcp_subnet_split[0].match(/\d+\.\d+\.\d+/) %>.<%= dhcp_subnet_split[0].sub(/\d+\.\d+\.\d+\./, '').to_i + 1 %>;
+    filename                    "/pxelinux.0";
+    default-lease-time          21600;
+    max-lease-time              43200;
+    next-server                 $next_server;
+}
+<% end -%>
+<% end -%>
 
 #for dhcp_tag in $dhcp_tags.keys():
     ## group could be subnet if your dhcp tags line up with your subnets
