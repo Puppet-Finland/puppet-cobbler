@@ -20,6 +20,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
         :name        => member['name'],
         :ensure      => :present,
         :distro      => member['distro'],
+        :parent      => member['parent'],
         :nameservers => member['name_servers'],
         :repos       => member['repos'],
         :kickstart   => member['kickstart']
@@ -40,6 +41,12 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
     def distro=(value)
       cobbler('profile', 'edit', '--name=' + @resource[:name], '--distro=' + value)
       @property_hash[:distro]=(value)
+    end
+
+    # sets parent profile
+    def parent=(value)
+      cobbler('profile', 'edit', '--name=' + @resource[:name], '--parent=' + value)
+      @property_hash[:parent]=(value)
     end
 
     # sets kickstart
@@ -76,9 +83,12 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
 
     def create
       # check profile name
-      raise ArgumentError, 'you must choose distribution for profile' if @resource[:distro].nil? 
+      raise ArgumentError, 'you must specify "distro" or "parent" for profile' if @resource[:distro].nil? and @resource[:parent].nil? 
+
       # create cobblerargs variable
-      cobblerargs='profile add --name=' + @resource[:name] + ' --distro=' + @resource[:distro]
+      cobblerargs  = 'profile add --name=' + @resource[:name] 
+      cobblerargs += ' --distro=' + @resource[:distro] unless @resource[:distro].nil?
+      cobblerargs += ' --parent=' + @resource[:parent] unless @resource[:parent] != ''
       
       # turn string into array
       cobblerargs = cobblerargs.split(' ')
@@ -86,10 +96,11 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       # run cobbler commands
       cobbler(cobblerargs)
 
-      # add distro, kickstart, nameservers & repos
-      self.kickstart   = @resource.should(:kickstart)   unless self.kickstart   == @resource.should(:kickstart)
-      self.nameservers = @resource.should(:nameservers) unless self.nameservers == @resource.should(:nameservers)
-      self.repos       = @resource.should(:repos)       unless self.repos       == @resource.should(:repos)
+      # add kickstart, nameservers & repos (distro and/or parent are needed at creation time)
+      # - check if property is defined, if not inheritance is probability (from parent)
+      self.kickstart   = @resource.should(:kickstart)   unless @resource[:kickstart].nil?   or self.kickstart   == @resource.should(:kickstart)
+      self.nameservers = @resource.should(:nameservers) unless @resource[:nameservers].nil? or self.nameservers == @resource.should(:nameservers)
+      self.repos       = @resource.should(:repos)       unless @resource[:repos].nil?       or self.repos       == @resource.should(:repos)
 
       # final sync
       cobbler('sync')

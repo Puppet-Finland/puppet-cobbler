@@ -24,6 +24,14 @@ cobblerprofile {'CentOS-6.3-x86_64':
     self[:distro]
   end
 
+  newproperty(:parent) do
+    defaultto ''
+    desc 'Parent profile that this profile is based on'
+  end
+  autorequire(:cobblerprofile) do
+    self[:parent]
+  end
+
   newproperty(:kickstart) do
     desc 'Kickstart file used by profile'
   end
@@ -33,7 +41,6 @@ cobblerprofile {'CentOS-6.3-x86_64':
 
   newproperty(:nameservers, :array_matching => :all) do
     desc 'List of nameservers for this profile'
-    defaultto []
     # http://projects.puppetlabs.com/issues/10237
     def insync?(is)
       return false unless is == should
@@ -43,7 +50,6 @@ cobblerprofile {'CentOS-6.3-x86_64':
 
   newproperty(:repos, :array_matching => :all) do
     desc "list of repositories added to profile"
-    defaultto []
     # http://projects.puppetlabs.com/issues/10237
     def insync?(is)
       return false unless is == should
