@@ -5,9 +5,9 @@ firewall --disabled
 # Install OS instead of upgrade
 install
 # Use network installation
-url --url="http://<%= server_ip %>/distros/<%= distro %>"
+url --url="http://<%= @server_ip %>/distros/<%= @distro %>"
 # Root password
-rootpw --iscrypted <%= defaultrootpw %>
+rootpw --iscrypted <%= @defaultrootpw %>
 # System authorization information
 authconfig --enableshadow --passalgo=sha512
 # Use text mode install
@@ -103,7 +103,7 @@ ntpdate 161.53.2.70
 # end ntp
 
 # Puppet
-echo "<%= server_ip %>	puppet" >> /etc/hosts
+echo "<%= @server_ip %>	puppet" >> /etc/hosts
 $SNIPPET('puppet_register_if_enabled')
 # End puppet
 

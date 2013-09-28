@@ -18,15 +18,15 @@ allow bootp;
 ignore client-updates;
 set vendorclass = option vendor-class-identifier;
 
-<% dhcp_interfaces.each do |iface| -%>
+<% @dhcp_interfaces.each do |iface| -%>
 subnet <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.0 netmask 255.255.255.0 {
-    option domain-name          "<%= domain %>";
+    option domain-name          "<%= @domain %>";
     option subnet-mask          255.255.255.0;
     option domain-name-servers  <%=
-if nameservers.kind_of?(Array)
-   nameservers.join(", ")
-elsif (nameservers.kind_of?(String) && nameservers != '' )
-   nameservers
+if @nameservers.kind_of?(Array)
+   @nameservers.join(", ")
+elsif (@nameservers.kind_of?(String) && @nameservers != '' )
+   @nameservers
 else
    puts("127.0.0.1")
 end %>;
