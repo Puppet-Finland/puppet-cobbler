@@ -1,10 +1,11 @@
 # Define: cobbler::add_distro
 define cobbler::add_distro (
-  $arch, 
-  $isolink, 
+  $arch,
+  $isolink,
   $kernel            = 'images/pxeboot/vmlinuz',
   $initrd            = 'images/pxeboot/initrd.img',
-  $include_kickstart = true
+  $ks_template       = "cobbler/${title}.ks.erb",
+  $include_kickstart = true,
 ) {
   include cobbler
   $distro = $title
@@ -18,11 +19,11 @@ define cobbler::add_distro (
     initrd  => "${::cobbler::distro_path}/${distro}/${initrd}",
     require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
   }
-  $defaultrootpw = $cobbler::defaultrootpw
+  $defaultrootpw = $::cobbler::defaultrootpw
   if ($include_kickstart) {
     file { "${::cobbler::distro_path}/kickstarts/${distro}.ks":
       ensure  => present,
-      content => template("cobbler/${distro}.ks.erb"),
+      content => template($ks_template),
       require => File["${cobbler::distro_path}/kickstarts"],
     }
   }

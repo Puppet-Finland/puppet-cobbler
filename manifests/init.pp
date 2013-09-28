@@ -52,6 +52,12 @@
 #   - $dhcp_interfaces [type: array]
 #     Interface for DHCP to listen on.
 #
+#   - $dhcp_subnets [type: array]
+#     If you use *DHCP relay* on your network, then $dhcp_interfaces
+#     won't suffice. $dhcp_subnets have to be defined, otherwise,
+#     DHCP won't offer address to a machine in a network that's
+#     not directly available on the DHCP machine itself.
+#
 #   - $defaultrootpw [type: string]
 #     Hash of root password for kickstart files.
 #
@@ -102,6 +108,7 @@ class cobbler (
   $next_server_ip     = $::cobbler::params::next_server_ip,
   $nameservers        = $::cobbler::params::nameservers,
   $dhcp_interfaces    = $::cobbler::params::dhcp_interfaces,
+  $dhcp_subnets       = $::cobbler::params::dhcp_subnets,
   $defaultrootpw      = $::cobbler::params::defaultrootpw,
   $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
@@ -115,10 +122,10 @@ class cobbler (
 ) inherits cobbler::params {
 
   # require apache modules
-  require ::apache
-  require ::apache::mod::wsgi
-  require ::apache::mod::proxy
-  require ::apache::mod::proxy_http
+  include ::apache
+  include ::apache::mod::wsgi
+  include ::apache::mod::proxy
+  include ::apache::mod::proxy_http
 
   # install section
   package { $::cobbler::params::tftp_package:     ensure => present, }
