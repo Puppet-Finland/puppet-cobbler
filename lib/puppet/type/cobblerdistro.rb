@@ -125,4 +125,9 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
     defaultto ''
   end
 
+  newproperty(:breed) do
+    desc 'Type of distribution.'
+    defaultto ''
+  end
+
 end

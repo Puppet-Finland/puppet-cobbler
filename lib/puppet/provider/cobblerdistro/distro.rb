@@ -28,7 +28,8 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
         :kernel         => member['kernel'],
         :initrd         => member['initrd'],
         :ks_meta        => member['ks_meta'],
-        :comment        => member['comment']
+        :comment        => member['comment'],
+        :breed          => member['breed']
       )
     end
     keys
@@ -85,6 +86,12 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     cobbler(cobblerargs)
     # update property_hash
     @property_hash[:ks_meta]=(value)
+  end
+
+  # Support cobbler's --breed
+  def breed=(value)
+    cobbler('distro', 'edit', '--name=' + @resource[:name], '--breed=' + value)
+    @property_hash[:breed]=(value)
   end
 
   # comment
@@ -154,6 +161,7 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     # add properties
     self.arch    = @resource.should(:arch)    unless self.arch    == @resource.should(:arch)
     self.comment = @resource.should(:comment) unless self.comment == @resource.should(:comment)
+    self.breed   = @resource.should(:breed)   unless self.breed   == @resource.should(:breed)
 
     # final sync
     cobbler('sync')
