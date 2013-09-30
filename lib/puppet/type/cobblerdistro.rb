@@ -41,7 +41,7 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
     desc 'The link of the distro ISO image.'
     validate do |value|
       if value != ''
-        raise ArgumentError, "%s is not a valid link to ISO image." % value unless value =~ /^http:.*iso/
+        raise ArgumentError, "%s is not a valid link to ISO image." % value unless value =~ /^https?:\/\/.*iso/
       end
     end
     defaultto ''
