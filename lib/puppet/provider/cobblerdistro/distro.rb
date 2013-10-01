@@ -29,7 +29,8 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
         :initrd         => member['initrd'],
         :ks_meta        => member['ks_meta'],
         :comment        => member['comment'],
-        :breed          => member['breed']
+        :breed          => member['breed'],
+        :os_version     => member['os_version']
       )
     end
     keys
@@ -93,6 +94,12 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     cobbler('distro', 'edit', '--name=' + @resource[:name], '--breed=' + value)
     @property_hash[:breed]=(value)
   end
+ 
+  # Support cobbler's --os-version
+  def os_version=(value)
+    cobbler('distro', 'edit', '--name=' + @resource[:name], '--os-version=' + value)
+    @property_hash[:os_version]=(value)
+  end
 
   # comment
   def comment=(value)
@@ -129,7 +136,7 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
       if ! File.directory? isopath
         Dir.mkdir(isopath, 755)
       end
-      mount( '-o', 'loop', isopath + '.iso', isopath)
+      mount( '-o', 'loop', isopath + '.iso', isopath) unless mount( '-l', '-t', 'iso9660') =~ /#{isopath}/
 
       # real work to be done here
       currentdir = Dir.pwd
@@ -156,9 +163,10 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     cobbler('profile', 'remove', '--name=' + @resource[:name]) if @resource[:path] != ''
 
     # add properties
-    self.arch    = @resource.should(:arch)    unless self.arch    == @resource.should(:arch)
-    self.comment = @resource.should(:comment) unless self.comment == @resource.should(:comment)
-    self.breed   = @resource.should(:breed)   unless self.breed   == @resource.should(:breed)
+    self.arch       = @resource.should(:arch)       unless self.arch       == @resource.should(:arch)
+    self.comment    = @resource.should(:comment)    unless self.comment    == @resource.should(:comment)
+    self.breed      = @resource.should(:breed)      unless self.breed      == @resource.should(:breed)
+    self.os_version = @resource.should(:os_version) unless self.os_version == @resource.should(:os_version)
 
     # final sync
     cobbler('sync')
