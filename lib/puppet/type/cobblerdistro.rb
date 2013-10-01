@@ -130,4 +130,9 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
     defaultto ''
   end
 
+  newproperty(:os_version) do
+    desc 'OS Version for virtualization optimizations.'
+    defaultto ''
+  end
+
 end
