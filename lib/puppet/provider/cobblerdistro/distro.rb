@@ -132,7 +132,7 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
       if ! File.directory? isopath
         Dir.mkdir(isopath, 755)
       end
-      mount( '-o', 'loop', isopath + '.iso', isopath)
+      mount( '-o', 'loop', isopath + '.iso', isopath) unless mount( '-l', '-t', 'iso9660') =~ /#{isopath}/
 
       # real work to be done here
       currentdir = Dir.pwd
