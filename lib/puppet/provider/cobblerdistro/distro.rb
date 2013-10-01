@@ -108,12 +108,9 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
 
       # if ks_meta tree is defined, get the value
       # and use it for '--available-as' option
-      if @resource[:ks_meta].has_key?('tree')
-        ks_meta_tree = @resource[:ks_meta]['tree']
-        cobblerargs = 'import --name=' + @resource[:name] + ' --path=' + @resource[:path] + ' --available-as=' + ks_meta_tree
-      else
-        cobblerargs = 'import --name=' + @resource[:name] + ' --path=' + @resource[:path] 
-      end
+      ks_meta = if @resource[:ks_meta].has_key?('tree') then ' --available-as=' + @resource[:ks_meta]['tree'] else '' end
+
+      cobblerargs = 'import --name=' + @resource[:name] + ' --path=' + @resource[:path] + ks_meta
     else
       # This is block that does:
       #  'cobbler distro add'
