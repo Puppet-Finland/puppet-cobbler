@@ -67,7 +67,6 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
 
   newproperty(:comment) do
     desc 'Human readable description of repository.'
-    defaultto ''
   end
 
 end

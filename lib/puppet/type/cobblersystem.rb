@@ -56,13 +56,13 @@ cobblersystem { 'test.domain.com':
       # was added or removed from manifest, so return false
       return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
       # check if something was added or removed on second level
-      is.each do |l,w|
-        if w.is_a?(Hash)
+      is.each do |is_key,is_value|
+        if is_value.is_a?(Hash)
           # hack for 'management' setting (which is being read all the time)
-          should[l]['management'] = false unless should[l].has_key?('management')
+          should[is_key]['management'] = false unless should[is_key].has_key?('management')
           # check every key in puppet manifest, leave the rest
-          should[l].keys.uniq do |to, key|
-            return false unless to[key] == w[key]
+          should[is_key].keys.uniq.each do |key|
+            return false unless should[key] != is_value[key]
           end
         end
       end
@@ -141,7 +141,57 @@ cobblersystem { 'test.domain.com':
   end
 
   newproperty(:comment) do
-    defaultto ''
+    desc 'Human readable description of this system.'
+  end
+
+  newproperty(:power_type) do
+    desc 'Power Management Type (Power management script to use)'
+  end
+
+  newproperty(:virt_auto_boot) do
+    desc 'Virt Auto Boot (Auto boot this VM?)'
+    newvalues(:true, :false, '<<inherit>>')
+    munge do |value|
+      case value
+      when:true, /true/i, /yes/i, '1', 1
+        :true
+      when :false, /false/i, /yes/i, '0', 0
+        :false
+      else
+        value
+      end
+    end
+    defaultto '<<inherit>>'
+  end
+
+  newproperty(:virt_disk_driver) do
+    desc 'Virt Disk Driver Type (The on-disk format for the virtualization disk)'
+  end
+
+  newproperty(:virt_file_size) do
+    desc 'Virt File Size(GB)'
+  end
+
+  newproperty(:virt_cpus) do
+    desc 'Virt CPUs'
+  end
+
+  newproperty(:virt_path) do
+    desc 'Virt Path (Ex: /directory or VolGroup00)'
+  end
+
+  newproperty(:virt_ram) do
+    desc 'Virt RAM (MB)'
+  end
+
+  # this will need to be extended as soon as cobbler starts supporting more virtualization platforms!
+  newproperty(:virt_type) do
+    desc 'Virt Type (Virtualization technology to use) (valid options: xenpv,xenfv,qemu,kvm,vmware,openvz)'
+    validate do |value|
+      unless value.chomp.empty?
+        raise ArgumentError| "%s is not a valid Virt-type. Must be one of xenpv| xenfv| qemu| kvm| vmware| openvz." % value unless value =~ /(xenpv|xenfv|qemu|kvm|vmware|openvz)/
+      end
+    end
   end
 
 end
