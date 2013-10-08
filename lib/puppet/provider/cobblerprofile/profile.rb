@@ -22,8 +22,10 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
         :distro           => member['distro'],
         :parent           => member['parent'],
         :nameservers      => member['name_servers'],
+        :search           => member['name_servers_search'],
         :repos            => member['repos'],
         :kickstart        => member['kickstart'],
+        :kernel_options   => member['kernel_options'],
         :comment          => member['comment'],
         :virt_auto_boot   => member['virt_auto_boot'].to_s,
         :virt_bridge      => member['virt_bridge'],
@@ -64,17 +66,56 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       @property_hash[:kickstart]=(value)
     end
 
+    # sets kernel-options
+    def kernel_options=(value)
+      # name argument for cobbler
+      namearg='--name=' + @resource[:name]
+
+      # construct commandline from value hash
+      cobblerargs='profile edit --name=' + @resource[:name]
+      cobblerargs=cobblerargs.split(' ')
+
+      # set up kernel options
+      kopts_value = []
+      # if value is ~, that means key is standalone option
+      value.each do |key,val|
+        if val=="~"
+          kopts_value << "#{key}"
+        else
+          kopts_value << "#{key}=#{val}" unless val=="~"
+        end
+      end
+      cobblerargs << ('--kopts=' + kopts_value * ' ')
+    # finally run command to set value
+    cobbler(cobblerargs)
+    # update property_hash
+    @property_hash[:kernel_options]=(value)
+  end
+
     # sets nameservers
     def nameservers=(value)
       # create cobblerargs variable
       cobblerargs='profile edit --name=' + @resource[:name]
       # turn string into array
       cobblerargs = cobblerargs.split(' ')
-      # set up nameserver argument 
+      # set up nameserver argument
       cobblerargs << ('--name-servers=' + value * ' ')
       # finally set value
       cobbler(cobblerargs)
       @property_hash[:nameservers]=(value)
+    end
+    #
+    # sets name-servers-search
+    def search=(value)
+      # create cobblerargs variable
+      cobblerargs='profile edit --name=' + @resource[:name]
+      # turn string into array
+      cobblerargs = cobblerargs.split(' ')
+      # set up nameserver argument
+      cobblerargs << ('--name-servers-search=' + value * ' ')
+      # finally set value
+      cobbler(cobblerargs)
+      @property_hash[:search]=(value)
     end
 
     # sets repos
@@ -83,7 +124,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       cobblerargs='profile edit --name=' + @resource[:name]
       # turn string into array
       cobblerargs = cobblerargs.split(' ')
-      # set up nameserver argument 
+      # set up nameserver argument
       cobblerargs << ('--repos=' + value * ' ')
       # finally set value
       cobbler(cobblerargs)
@@ -148,13 +189,13 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
 
     def create
       # check profile name
-      raise ArgumentError, 'you must specify "distro" or "parent" for profile' if @resource[:distro].nil? and @resource[:parent].nil? 
+      raise ArgumentError, 'you must specify "distro" or "parent" for profile' if @resource[:distro].nil? and @resource[:parent].nil?
 
       # create cobblerargs variable
-      cobblerargs  = 'profile add --name=' + @resource[:name] 
+      cobblerargs  = 'profile add --name=' + @resource[:name]
       cobblerargs += ' --distro=' + @resource[:distro] unless @resource[:distro].nil?
       cobblerargs += ' --parent=' + @resource[:parent] unless @resource[:parent].nil?
-      
+
       # turn string into array
       cobblerargs = cobblerargs.split(' ')
 
@@ -164,7 +205,9 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       # add kickstart, nameservers & repos (distro and/or parent are needed at creation time)
       # - check if property is defined, if not inheritance is probability (from parent)
       self.kickstart        = @resource.should(:kickstart)        unless @resource[:kickstart].nil?        or self.kickstart        == @resource.should(:kickstart)
+      self.kernel_options   = @resource.should(:kernel_options)   unless @resource[:kernel_options].nil?   or self.kernel_options   == @resource.should(:kernel_options)
       self.nameservers      = @resource.should(:nameservers)      unless @resource[:nameservers].nil?      or self.nameservers      == @resource.should(:nameservers)
+      self.nameservers      = @resource.should(:search)           unless @resource[:search].nil?           or self.search           == @resource.should(:search)
       self.repos            = @resource.should(:repos)            unless @resource[:repos].nil?            or self.repos            == @resource.should(:repos)
       self.comment          = @resource.should(:comment)          unless @resource[:comment].nil?          or self.comment          == @resource.should(:comment)
       self.virt_auto_boot   = @resource.should(:virt_auto_boot)   unless @resource[:virt_auto_boot].nil?   or self.virt_auto_boot   == @resource.should(:virt_auto_boot)

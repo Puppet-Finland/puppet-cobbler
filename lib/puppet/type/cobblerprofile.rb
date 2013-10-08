@@ -32,6 +32,33 @@ cobblerprofile {'CentOS-6.3-x86_64':
     self[:parent]
   end
 
+  newproperty(:kernel_options) do
+    desc "Kernel options for installation boot."
+    defaultto Hash.new
+
+    def insync?(is)
+      # @should is an Array. see lib/puppet/type.rb insync?
+      should = @should.first
+
+      # if members of hashes are not the same, something
+      # was added or removed from manifest, so return false
+      return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
+      # check if values of hash keys are equal
+      is.each do |l,w|
+        return false unless w == should[l]
+      end
+      true
+    end
+
+    def should_to_s(newvalue)
+      newvalue.inspect
+    end
+
+    def is_to_s(currentvalue)
+      currentvalue.inspect
+    end
+  end
+
   newproperty(:kickstart) do
     desc 'Kickstart file used by profile'
   end
@@ -41,6 +68,15 @@ cobblerprofile {'CentOS-6.3-x86_64':
 
   newproperty(:nameservers, :array_matching => :all) do
     desc 'List of nameservers for this profile'
+    # http://projects.puppetlabs.com/issues/10237
+    def insync?(is)
+      return false unless is == should
+      true
+    end
+  end
+
+  newproperty(:search, :array_matching => :all) do
+    desc 'List of nameserver search domains for this profile'
     # http://projects.puppetlabs.com/issues/10237
     def insync?(is)
       return false unless is == should
