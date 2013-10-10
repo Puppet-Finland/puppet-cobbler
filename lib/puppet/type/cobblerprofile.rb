@@ -45,7 +45,7 @@ cobblerprofile {'CentOS-6.3-x86_64':
       return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
       # check if values of hash keys are equal
       is.each do |l,w|
-        return false unless w == should[l]
+        return false unless w.to_s == should[l].to_s
       end
       true
     end

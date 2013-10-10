@@ -62,7 +62,7 @@ cobblersystem { 'test.domain.com':
           should[is_key]['management'] = false unless should[is_key].has_key?('management')
           # check every key in puppet manifest, leave the rest
           should[is_key].keys.uniq.each do |key|
-            return false unless should[key] != is_value[key]
+            return false unless should[key].to_s != is_value[key].to_s
           end
         end
       end
@@ -101,7 +101,7 @@ cobblersystem { 'test.domain.com':
       return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
       # check if values of hash keys are equal
       is.each do |l,w|
-        return false unless w == should[l]
+        return false unless w.to_s == should[l].to_s
       end
       true
     end

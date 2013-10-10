@@ -38,10 +38,10 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :power_type       => member['power_type'],
         :virt_auto_boot   => member['virt_auto_boot'].to_s,
         :virt_disk_driver => member['virt_disk_driver'],
-        :virt_file_size   => member['virt_file_size'],
-        :virt_cpus        => member['virt_cpus'],
+        :virt_file_size   => member['virt_file_size'].to_s,
+        :virt_cpus        => member['virt_cpus'].to_s,
         :virt_path        => member['virt_path'],
-        :virt_ram         => member['virt_ram'],
+        :virt_ram         => member['virt_ram'].to_s,
         :virt_type        => member['virt_type'],
       )
     end
