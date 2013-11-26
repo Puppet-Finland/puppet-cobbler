@@ -13,8 +13,9 @@ cobblerrepo {'PuppetLabs-5-x86_64-deps':
   comment        => 'some random comment',
 }
 
-This rule would ensure that the kernel swappiness setting be set to '20'"
- 
+This rule would add repository 'PuppetLabs-5-x86_64-deps' for architecture
+x86_64 to cobbler, set it's priority to 99 and mirror it locally."
+
   desc 'The cobbler repo type'
 
   ensurable
