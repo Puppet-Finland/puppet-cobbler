@@ -1,0 +1,13 @@
+#
+# = Class: cobbler::dependency_class
+#
+# Loads standard dependencies that class 'cobbler' requires.
+class cobbler::dependency_class {
+
+  # require apache modules
+  include ::apache
+  include ::apache::mod::wsgi
+  include ::apache::mod::proxy
+  include ::apache::mod::proxy_http
+
+}

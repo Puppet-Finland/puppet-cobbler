@@ -1,6 +1,10 @@
-# Define: cobbler::del_distro
+#
+# = Define: cobbler::del_distro
+#
+# Deletes cobblerdistro and it's kickstart
 define cobbler::del_distro (){
-  include cobbler
+  include ::cobbler
+
   $distro = $title
   cobblerdistro { $distro :
     ensure  => absent,

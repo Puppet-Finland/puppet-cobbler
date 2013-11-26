@@ -118,14 +118,14 @@ class cobbler (
   $purge_system       = $::cobbler::params::purge_system,
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = $::cobbler::params::webroot,
-  $auth_module        = $::cobbler::params::auth_module
+  $auth_module        = $::cobbler::params::auth_module,
+  $dependency_class   = $::cobbler::params::dependency_class,
 ) inherits cobbler::params {
 
-  # require apache modules
-  include ::apache
-  include ::apache::mod::wsgi
-  include ::apache::mod::proxy
-  include ::apache::mod::proxy_http
+  # include dependencies
+  if $::cobbler::dependency_class {
+    include $::cobbler::dependency_class
+  }
 
   # install section
   package { $::cobbler::params::tftp_package:     ensure => present, }
