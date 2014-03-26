@@ -45,7 +45,7 @@
 #   - $next_server_ip [type: string]
 #     Next Server in cobbler config.
 #
-#   - $nameserversa [type: array]
+#   - $nameservers [type: array]
 #     Nameservers for kickstart files to put in resolv.conf upon
 #     installation.
 #
