@@ -57,8 +57,62 @@ cobblerprofile {'CentOS-6.3-x86_64':
     end
 
   end
+
   autorequire(:cobblerrepo) do
     self[:repos]
+  end
+
+
+  newproperty(:comment) do
+    desc 'Human readable description of this profile.'
+  end
+
+  newproperty(:virt_auto_boot) do
+    desc 'Virt Auto Boot (Auto boot this VM?)'
+    newvalues(:true, :false)
+    munge do |value|
+      case value
+      when:true, /true/i, /yes/i, '1', 1
+        :true
+      when :false, /false/i, /yes/i, '0', 0, nil
+        :false
+      end
+    end
+    defaultto :true
+  end
+
+  newproperty(:virt_bridge) do
+    desc 'Virt Bridge'
+  end
+
+  newproperty(:virt_disk_driver) do
+    desc 'Virt Disk Driver Type (The on-disk format for the virtualization disk)'
+  end
+
+  newproperty(:virt_file_size) do
+    desc 'Virt File Size(GB)'
+  end
+
+  newproperty(:virt_cpus) do
+    desc 'Virt CPUs'
+  end
+
+  newproperty(:virt_path) do
+    desc 'Virt Path (Ex: /directory or VolGroup00)'
+  end
+
+  newproperty(:virt_ram) do
+    desc 'Virt RAM (MB)'
+  end
+
+  # this will need to be extended as soon as cobbler starts supporting more virtualization platforms!
+  newproperty(:virt_type) do
+    desc 'Virt Type (Virtualization technology to use) (valid options: xenpv,xenfv,qemu,kvm,vmware,openvz)'
+    validate do |value|
+      unless value.chomp.empty?
+        raise ArgumentError| "%s is not a valid Virt-type. Must be one of xenpv| xenfv| qemu| kvm| vmware| openvz." % value unless value =~ /(xenpv|xenfv|qemu|kvm|vmware|openvz)/
+      end
+    end
   end
 
 end

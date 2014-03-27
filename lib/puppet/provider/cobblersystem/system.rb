@@ -26,15 +26,23 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
       end
 
       keys << new(
-        :name           => member['name'],
-        :ensure         => :present,
-        :profile        => member['profile'],
-        :interfaces     => inet_hash,
-        :kernel_options => member['kernel_options'],
-        :hostname       => member['hostname'],
-        :gateway        => member['gateway'],
-        :netboot        => member['netboot_enabled'].to_s,
-        :comment        => member['comment']
+        :name             => member['name'],
+        :ensure           => :present,
+        :profile          => member['profile'],
+        :interfaces       => inet_hash,
+        :kernel_options   => member['kernel_options'],
+        :hostname         => member['hostname'],
+        :gateway          => member['gateway'],
+        :netboot          => member['netboot_enabled'].to_s,
+        :comment          => member['comment'],
+        :power_type       => member['power_type'],
+        :virt_auto_boot   => member['virt_auto_boot'].to_s,
+        :virt_disk_driver => member['virt_disk_driver'],
+        :virt_file_size   => member['virt_file_size'],
+        :virt_cpus        => member['virt_cpus'],
+        :virt_path        => member['virt_path'],
+        :virt_ram         => member['virt_ram'],
+        :virt_type        => member['virt_type'],
       )
     end
     keys
@@ -68,8 +76,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
 
   # sets netboot
   def netboot=(value)
-    tmparg='--netboot-enabled=0'
-    tmparg='--netboot-enabled=1' if value.to_s.grep(/false/i).empty?
+    tmparg='--netboot=' + if value.to_s =~ /false/i then '0' else  '1' end
     cobbler('system', 'edit', '--name=' + @resource[:name], tmparg)
     @property_hash[:netboot]=(value)
   end
@@ -158,17 +165,74 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     @property_hash[:comment]=(value)
   end
 
+  # sets power-type
+  def power_type=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--power-type=' + value)
+    @property_hash[:power_type]=(value)
+  end
+
+  # sets virt-auto-boot
+  def virt_auto_boot=(value)
+    tmparg='--virt-auto-boot=' + if value.to_s =~ /false/i then '0' elsif value.to_s =~ /true/i then '1' else '<<inherit>>' end
+    cobbler('system', 'edit', '--name=' + @resource[:name], tmparg)
+    @property_hash[:virt_auto_boot]=(value)
+  end
+
+  # sets virt-disk-driver
+  def virt_disk_driver=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-disk-driver=' + value)
+    @property_hash[:virt_disk_driver]=(value)
+  end
+
+  # sets virt-file-size
+  def virt_file_size=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-file-size=' + value.to_s)
+    @property_hash[:virt_file_size]=(value.to_s)
+  end
+
+  # sets virt-cpus
+  def virt_cpus=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-cpus=' + value.to_s)
+    @property_hash[:virt_cpus]=(value.to_s)
+  end
+
+  # sets virt-path
+  def virt_path=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-path=' + value)
+    @property_hash[:virt_path]=(value)
+  end
+
+  # sets virt-ram
+  def virt_ram=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-ram=' + value.to_s)
+    @property_hash[:virt_ram]=(value.to_s)
+  end
+
+  # sets virt-type
+  def virt_type=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--virt-type=' + value)
+    @property_hash[:virt_type]=(value)
+  end
+
   def create
     # add system
     cobbler('system', 'add', '--name=' + @resource[:name], '--profile=' + @resource[:profile])
 
     # add hostname, gateway, interfaces, netboot
-    self.hostname       = @resource.should(:hostname)       unless self.hostname       == @resource.should(:hostname)
-    self.gateway        = @resource.should(:gateway)        unless self.gateway        == @resource.should(:gateway)
-    self.interfaces     = @resource.should(:interfaces)     unless self.interfaces     == @resource.should(:interfaces)
-    self.netboot        = @resource.should(:netboot)        unless self.netboot        == @resource.should(:netboot)
-    self.comment        = @resource.should(:comment)        unless self.comment        == @resource.should(:comment)
-    self.kernel_options = @resource.should(:kernel_options) unless self.kernel_options == @resource.should(:kernel_options)
+    # note that interfaces has a default of {}, so we treat it special. All others default to nothing, so we check for nil.
+    self.interfaces       = @resource.should(:interfaces)       unless self.interfaces       == @resource.should(:interfaces)
+    self.hostname         = @resource.should(:hostname)         unless @resource[:hostname].nil?         or self.hostname         == @resource.should(:hostname)
+    self.gateway          = @resource.should(:gateway)          unless @resource[:gateway].nil?          or self.gateway          == @resource.should(:gateway)
+    self.netboot          = @resource.should(:netboot)          unless @resource[:netboot].nil?          or self.netboot          == @resource.should(:netboot)
+    self.comment          = @resource.should(:comment)          unless @resource[:comment].nil?          or self.comment          == @resource.should(:comment)
+    self.kernel_options   = @resource.should(:kernel_options)   unless @resource[:kernel_options].nil?   or self.kernel_options   == @resource.should(:kernel_options)
+    self.power_type       = @resource.should(:power_type)       unless @resource[:power_type].nil?       or self.power_type       == @resource.should(:power_type)
+    self.virt_auto_boot   = @resource.should(:virt_auto_boot)   unless @resource[:virt_auto_boot].nil?   or self.virt_auto_boot   == @resource.should(:virt_auto_boot)
+    self.virt_disk_driver = @resource.should(:virt_disk_driver) unless @resource[:virt_disk_driver].nil? or self.virt_disk_driver == @resource.should(:virt_disk_driver)
+    self.virt_file_size   = @resource.should(:virt_file_size)   unless @resource[:virt_file_size].nil?   or self.virt_file_size   == @resource.should(:virt_file_size)
+    self.virt_cpus        = @resource.should(:virt_cpus)        unless @resource[:virt_cpus].nil?        or self.virt_cpus        == @resource.should(:virt_cpus)
+    self.virt_ram         = @resource.should(:virt_ram)         unless @resource[:virt_ram].nil?         or self.virt_ram         == @resource.should(:virt_ram)
+    self.virt_type        = @resource.should(:virt_type)        unless @resource[:virt_type].nil?        or self.virt_type        == @resource.should(:virt_type)
 
     # sync state
     cobbler('sync')

@@ -31,7 +31,7 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
     isnamevar
     desc 'The name of the distro, that will create subdir in $distro'
     validate do |value|
-      if value != ''
+      if value
         raise ArgumentError, "%s is not a valid cobblerdistro name. It doesn't end with arch (x86_64|i386)." % value unless value =~ /(x86_64|i386)$/
       end
     end
@@ -40,21 +40,19 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
   newparam(:isolink) do
     desc 'The link of the distro ISO image.'
     validate do |value|
-      if value != ''
+      if value
         raise ArgumentError, "%s is not a valid link to ISO image." % value unless value =~ /^https?:\/\/.*iso/
       end
     end
-    defaultto ''
   end
 
   newparam(:path) do
     desc 'Local path or rsync location'
     validate do |value|
-      if value != ''
+      if value
         raise ArgumentError, "%s is not a valid directory." % value unless File.directory? value
       end
     end
-    defaultto ''
   end
 
   newparam(:destdir) do
@@ -62,7 +60,7 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
     validate do |value|
       # /tmp is used as default value, and that is OK *only* when
       # path is selected and 'cobbler import' is used
-      raise ArgumentError, "%s cannot be used as a directory. If you're using 'path' param in cobblerdistro, please remove 'isolink'." % value if (value == '/tmp' and @resource[:isolink] != '')
+      raise ArgumentError, "%s cannot be used as a directory. If you're using 'path' param in cobblerdistro, please remove 'isolink'." % value if (value == '/tmp' and @resource[:isolink])
       # check if directory exists
       raise ArgumentError, "%s is not a valid directory." % value unless File.directory? value
     end
@@ -122,17 +120,14 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
 
   newproperty(:comment) do
     desc 'Human readable description of distribution.'
-    defaultto ''
   end
 
   newproperty(:breed) do
     desc 'Type of distribution.'
-    defaultto ''
   end
 
   newproperty(:os_version) do
     desc 'OS Version for virtualization optimizations.'
-    defaultto ''
   end
 
 end

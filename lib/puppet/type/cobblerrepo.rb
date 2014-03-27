@@ -68,7 +68,6 @@ x86_64 to cobbler, set it's priority to 99 and mirror it locally."
 
   newproperty(:comment) do
     desc 'Human readable description of repository.'
-    defaultto ''
   end
 
 end
