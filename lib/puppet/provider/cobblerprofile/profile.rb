@@ -207,7 +207,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       self.kickstart        = @resource.should(:kickstart)        unless @resource[:kickstart].nil?        or self.kickstart        == @resource.should(:kickstart)
       self.kernel_options   = @resource.should(:kernel_options)   unless @resource[:kernel_options].nil?   or self.kernel_options   == @resource.should(:kernel_options)
       self.nameservers      = @resource.should(:nameservers)      unless @resource[:nameservers].nil?      or self.nameservers      == @resource.should(:nameservers)
-      self.nameservers      = @resource.should(:search)           unless @resource[:search].nil?           or self.search           == @resource.should(:search)
+      self.search           = @resource.should(:search)           unless @resource[:search].nil?           or self.search           == @resource.should(:search)
       self.repos            = @resource.should(:repos)            unless @resource[:repos].nil?            or self.repos            == @resource.should(:repos)
       self.comment          = @resource.should(:comment)          unless @resource[:comment].nil?          or self.comment          == @resource.should(:comment)
       self.virt_auto_boot   = @resource.should(:virt_auto_boot)   unless @resource[:virt_auto_boot].nil?   or self.virt_auto_boot   == @resource.should(:virt_auto_boot)
