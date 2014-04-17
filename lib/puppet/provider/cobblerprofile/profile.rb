@@ -34,7 +34,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
         :virt_cpus        => member['virt_cpus'].to_s,
         :virt_path        => member['virt_path'],
         :virt_ram         => member['virt_ram'].to_s,
-        :virt_type        => member['virt_type'],
+        :virt_type        => member['virt_type']
       )
     end
     keys
