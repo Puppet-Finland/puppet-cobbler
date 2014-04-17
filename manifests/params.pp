@@ -35,6 +35,9 @@ class cobbler::params {
   }
   $package_ensure = 'present'
 
+  # class containing all module dependencies
+  $dependency_class = '::cobbler::dependency'
+
   # location of the cobbler web root
   $webroot = '/var/www/cobbler'
 

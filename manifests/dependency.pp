@@ -1,8 +1,8 @@
 #
-# = Class: cobbler::dependency_class
+# = Class: cobbler::dependency
 #
 # Loads standard dependencies that class 'cobbler' requires.
-class cobbler::dependency_class {
+class cobbler::dependency {
 
   # require apache modules
   include ::apache
