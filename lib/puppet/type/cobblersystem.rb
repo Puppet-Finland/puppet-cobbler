@@ -127,7 +127,7 @@ cobblersystem { 'test.domain.com':
 
   newproperty(:hostname) do
     desc 'The hostname of the system, can be equal to name'
-    defaultto ''
+    defaultto { @resource[:name] }
     validate do |value|
       unless value.chomp.empty?
         raise ArgumentError, "%s is not a valid hostname." % value unless value =~ /^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-_]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-_]*[A-Za-z0-9])$/
