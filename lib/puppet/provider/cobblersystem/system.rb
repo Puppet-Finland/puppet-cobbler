@@ -15,6 +15,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     xmlrpcresult = cobblerserver.call('get_systems')
 
     # get properties of current system to @property_hash
+    #  * virt_auto_boot expects true or false strings, but cobbler reports 1 or 0
+    #  * interfaces expects only values and not empty strings/arrays
     xmlrpcresult.each do |member|
       # put only keys with values in interfaces hash
       inet_hash = {}
@@ -36,7 +38,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :netboot          => member['netboot_enabled'].to_s,
         :comment          => member['comment'],
         :power_type       => member['power_type'],
-        :virt_auto_boot   => member['virt_auto_boot'].to_s,
+        :virt_auto_boot   => member['virt_auto_boot'].to_s.sub(/^1$/,'true').sub(/^0$/,'false'),
         :virt_disk_driver => member['virt_disk_driver'],
         :virt_file_size   => member['virt_file_size'].to_s,
         :virt_cpus        => member['virt_cpus'].to_s,

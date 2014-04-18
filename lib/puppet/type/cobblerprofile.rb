@@ -108,7 +108,7 @@ cobblerprofile {'CentOS-6.3-x86_64':
     newvalues(:true, :false)
     munge do |value|
       case value
-      when:true, /true/i, /yes/i, '1', 1
+      when :true, /true/i, /yes/i, '1', 1
         :true
       when :false, /false/i, /yes/i, '0', 0, nil
         :false

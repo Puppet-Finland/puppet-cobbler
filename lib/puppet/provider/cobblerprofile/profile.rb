@@ -15,6 +15,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
     xmlrpcresult = cobblerserver.call('get_profiles')
 
     # get properties of current system to @property_hash
+    #  * virt_auto_boot expects true or false strings, but cobbler reports 1 or 0
     xmlrpcresult.each do |member|
       keys << new(
         :name             => member['name'],
@@ -27,7 +28,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
         :kickstart        => member['kickstart'],
         :kernel_options   => member['kernel_options'],
         :comment          => member['comment'],
-        :virt_auto_boot   => member['virt_auto_boot'].to_s,
+        :virt_auto_boot   => member['virt_auto_boot'].to_s.sub(/^1$/,'true').sub(/^0$/,'false'),
         :virt_bridge      => member['virt_bridge'],
         :virt_disk_driver => member['virt_disk_driver'],
         :virt_file_size   => member['virt_file_size'].to_s,
