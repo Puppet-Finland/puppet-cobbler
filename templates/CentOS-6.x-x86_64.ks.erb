@@ -78,9 +78,11 @@ $SNIPPET('post_install_network_config')
 # config kernel options
 $SNIPPET('post_install_kernel_options')
 
+<% if @ntp_server -%>
 # ntp
-ntpdate 161.53.2.70
+ntpdate <%= @ntp_server %>
 # end ntp
+<% end -%>
 
 # Puppet
 echo "<%= @server_ip %>	puppet" >> /etc/hosts
