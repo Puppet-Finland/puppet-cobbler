@@ -74,7 +74,7 @@
 #   - $purge_system  [type: bool]
 #     Decides wether or not to purge (remove) from cobbler distro,
 #     repo, profiles and systems which are not managed by puppet.
-#     Default is true.
+#     Default is false.
 #
 #   - default_kickstart [type: string]
 #     Location of the default kickstart. Default depends on $::osfamily.
@@ -115,10 +115,10 @@ class cobbler (
   $defaultrootpw      = $::cobbler::params::defaultrootpw,
   $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
-  $purge_distro       = $::cobbler::params::purge_distro,
-  $purge_repo         = $::cobbler::params::purge_repo,
-  $purge_profile      = $::cobbler::params::purge_profile,
-  $purge_system       = $::cobbler::params::purge_system,
+  $purge_distro       = false,
+  $purge_repo         = false,
+  $purge_profile      = false,
+  $purge_system       = false,
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = $::cobbler::params::webroot,
   $auth_module        = $::cobbler::params::auth_module,

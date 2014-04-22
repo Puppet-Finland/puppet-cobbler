@@ -81,9 +81,4 @@ class cobbler::params {
   # authorization
   $auth_module = 'authn_denyall'
 
-  # purge resources that are not defined
-  $purge_distro  = true
-  $purge_repo    = true
-  $purge_profile = true
-  $purge_system  = true
 }
