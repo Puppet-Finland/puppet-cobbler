@@ -195,22 +195,7 @@ class cobbler (
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp == '1' {
-    package { 'dhcp':
-      ensure => present,
-    }
-    service { 'dhcpd':
-      ensure  => running,
-      require => Package['dhcp'],
-    }
-    file { '/etc/cobbler/dhcp.template':
-      ensure  => present,
-      owner   => root,
-      group   => root,
-      mode    => '0644',
-      content => template('cobbler/dhcp.template.erb'),
-      require => Package[$package_name],
-      notify  => Exec['cobblersync'],
-    }
+    include ::cobbler::dhcp
   }
 
   # logrotate script
