@@ -37,7 +37,7 @@ zerombr
 # Partition clearing information
 clearpart --drives=sda --all
 # Disk partitioning information
-part /boot --ondisk=sda --asprimary --fstype="ext2" --size=100
+part /boot --ondisk=sda --asprimary --fstype="ext2" --size=256
 part swap  --ondisk=sda --asprimary --fstype="swap" --size=4096
 part /     --ondisk=sda --asprimary --fstype="ext3" --size=20480
 part /data --ondisk=sda --asprimary --fstype="ext4" --size=4096 --grow
