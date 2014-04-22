@@ -29,8 +29,7 @@ class cobbler::params {
       $dhcp_version        = 'present'
       $dhcp_service        = 'isc-dhcp-server'
       $http_config_prefix  = '/etc/apache2/conf.d'
-      # This is a silly Debian/Ubuntu hack
-      $proxy_config_prefix = '/etc/apache2/sites-enabled'
+      $proxy_config_prefix = '/etc/apache2/conf.d'
       $distro_path         = '/var/www/cobbler/ks_mirror'
       $apache_service      = 'apache2'
       $default_kickstart   = '/var/lib/cobbler/kickstarts/ubuntu-server.preseed'
