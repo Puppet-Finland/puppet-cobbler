@@ -82,6 +82,9 @@
 #   - webroot [type: string]
 #     Location of Cobbler's web root. Default: '/var/www/cobbler'.
 #
+#   - create_resources [type: bool]
+#     Automatically create resources from hiera hashes. Default: false
+#
 # Actions:
 #   - Install Cobbler
 #   - Manage Cobbler service
@@ -119,6 +122,7 @@ class cobbler (
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = $::cobbler::params::webroot,
   $auth_module        = $::cobbler::params::auth_module,
+  $create_resources   = false,
   $dependency_class   = $::cobbler::params::dependency_class,
 ) inherits cobbler::params {
 
@@ -179,18 +183,30 @@ class cobbler (
     refreshonly => true,
   }
 
-  # purge resources
-  if $purge_distro == true {
-    resources { 'cobblerdistro':  purge => true, }
+  # resource defaults
+  resources { 'cobblerdistro':
+    purge   => $purge_distro,
+    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
   }
-  if $purge_repo == true {
-    resources { 'cobblerrepo':    purge => true, }
+  resources { 'cobblerrepo':
+    purge   => $purge_repo,
+    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
   }
-  if $purge_profile == true {
-    resources { 'cobblerprofile': purge => true, }
+  resources { 'cobblerprofile':
+    purge   => $purge_profile,
+    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
   }
-  if $purge_system == true {
-    resources { 'cobblersystem':  purge => true, }
+  resources { 'cobblersystem':
+    purge   => $purge_system,
+    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+  }
+
+  # create resources from hiera
+  if ( $create_resources == true ) {
+    create_resources(cobblerdistro,  hiera_hash('cobbler::distros',  {}) )
+    create_resources(cobblerrepo,    hiera_hash('cobbler::repos',    {}) )
+    create_resources(cobblerprofile, hiera_hash('cobbler::profiles', {}) )
+    create_resources(cobblersystem,  hiera_hash('cobbler::systems',  {}) )
   }
 
   # include ISC DHCP only if we choose manage_dhcp
