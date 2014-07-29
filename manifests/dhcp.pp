@@ -10,11 +10,13 @@ class cobbler::dhcp (
   $service         = $::cobbler::params::dhcp_service,
   $nameservers     = $::cobbler::params::nameservers,
   $interfaces      = $::cobbler::params::dhcp_interfaces,
+  $subnets         = undef,
   $dynamic_range   = $::cobbler::params::dhcp_dynamic_range,
 ) inherits cobbler::params {
   include ::cobbler
 
   $dhcp_interfaces    = $interfaces
+  $dhcp_subnets       = $subnets
   $dhcp_dynamic_range = $dynamic_range
 
   package { 'dhcp':
@@ -33,6 +35,7 @@ class cobbler::dhcp (
     owner   => root,
     group   => root,
     mode    => '0644',
+    require => Package['cobbler'],
     content => template('cobbler/dhcp.template.erb'),
   }
 
