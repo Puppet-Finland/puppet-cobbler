@@ -54,6 +54,9 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
       end
     end
   end
+  autorequire(:file) do
+    self[:path]
+  end
 
   newparam(:destdir) do
     desc 'The link of the distro ISO image.'
@@ -61,10 +64,11 @@ This rule would ensure that the kernel swappiness setting be set to '20'"
       # /tmp is used as default value, and that is OK *only* when
       # path is selected and 'cobbler import' is used
       raise ArgumentError, "%s cannot be used as a directory. If you're using 'path' param in cobblerdistro, please remove 'isolink'." % value if (value == '/tmp' and @resource[:isolink])
-      # check if directory exists
-      raise ArgumentError, "%s is not a valid directory." % value unless File.directory? value
     end
     defaultto '/tmp'
+  end
+  autorequire(:file) do
+    self[:destdir]
   end
 
   newproperty(:arch) do
