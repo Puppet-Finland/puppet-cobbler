@@ -92,10 +92,10 @@ Puppet::Type.type(:cobblerrepo).provide(:repo) do
     cobbler(cobblerargs)
     
     # add properties
-    self.arch           = @resource.should(:arch)          unless self.arch           == @resource.should(:arch)
-    self.mirror_locally = @resource.should(:mirror_localy) unless self.mirror_locally == @resource.should(:mirror_locally)
-    self.keep_updated   = @resource.should(:keep_updated)  unless self.keep_updated   == @resource.should(:keep_updated)
-    self.comment        = @resource.should(:comment)       unless @resource.should(:comment).nil? or self.comment == @resource.should(:comment)
+    self.arch           = @resource.should(:arch)           unless @resource[:arch].nil?           or self.arch           == @resource.should(:arch)
+    self.mirror_locally = @resource.should(:mirror_locally) unless @resource[:mirror_locally].nil? or self.mirror_locally == @resource.should(:mirror_locally)
+    self.keep_updated   = @resource.should(:keep_updated)   unless @resource[:keep_updated].nil?   or self.keep_updated   == @resource.should(:keep_updated)
+    self.comment        = @resource.should(:comment)        unless @resource[:comment].nil?        or self.comment        == @resource.should(:comment)
     
     # final sync
     cobbler('reposync')

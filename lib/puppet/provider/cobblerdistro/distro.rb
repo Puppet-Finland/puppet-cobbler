@@ -124,7 +124,6 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
 
       # create destination directory for distro
       distrodestdir = @resource[:destdir] + '/' + @resource[:name]
-      Dir.mkdir(distrodestdir) unless File.directory? distrodestdir
 
       # get ISO image
       wget(@resource[:isolink],'--continue','--directory-prefix=/tmp').strip
@@ -163,9 +162,9 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     cobbler('profile', 'remove', '--name=' + @resource[:name]) unless @resource[:path]
 
     # add properties
-    self.arch       = @resource.should(:arch)       unless self.arch       == @resource.should(:arch)
-    self.comment    = @resource.should(:comment)    unless @resource[:comment].nil?   or self.comment    == @resource.should(:comment)
-    self.breed      = @resource.should(:breed)      unless @resource[:breed].nil?     or self.breed      == @resource.should(:breed)
+    self.arch       = @resource.should(:arch)       unless @resource[:arch].nil?       or self.arch       == @resource.should(:arch)
+    self.comment    = @resource.should(:comment)    unless @resource[:comment].nil?    or self.comment    == @resource.should(:comment)
+    self.breed      = @resource.should(:breed)      unless @resource[:breed].nil?      or self.breed      == @resource.should(:breed)
     self.os_version = @resource.should(:os_version) unless @resource[:os_version].nil? or self.os_version == @resource.should(:os_version)
 
     # final sync
