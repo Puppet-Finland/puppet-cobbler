@@ -21,14 +21,14 @@ define cobbler::add_distro (
     destdir => $::cobbler::distro_path,
     kernel  => "${::cobbler::distro_path}/${distro}/${kernel}",
     initrd  => "${::cobbler::distro_path}/${distro}/${initrd}",
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   $defaultrootpw = $::cobbler::defaultrootpw
   if ($include_kickstart) {
     file { "${::cobbler::distro_path}/kickstarts/${distro}.ks":
       ensure  => present,
       content => template($ks_template),
-      require => File["${cobbler::distro_path}/kickstarts"],
+      require => File["${::cobbler::distro_path}/kickstarts"],
     }
   }
 }

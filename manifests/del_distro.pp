@@ -9,7 +9,7 @@ define cobbler::del_distro (){
   cobblerdistro { $distro :
     ensure  => absent,
     destdir => $cobbler::distro_path,
-    require => [ Service[$cobbler::service_name], Service[$cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   file { "${cobbler::distro_path}/kickstarts/${distro}.ks":
     ensure  => absent,

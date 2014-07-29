@@ -134,15 +134,17 @@ class cobbler (
   # install section
   package { $::cobbler::params::tftp_package:     ensure => present, }
   package { $::cobbler::params::syslinux_package: ensure => present, }
-  package { $package_name:
+  package { 'cobbler':
     ensure  => $package_ensure,
+    name    => $package_name,
     require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
   }
 
-  service { $service_name :
+  service { 'cobbler':
     ensure  => running,
+    name    => $service_name,
     enable  => true,
-    require => Package[$package_name],
+    require => [ Package['cobbler'], File["${distro_path}/kickstarts"] ],
   }
 
   # file defaults
@@ -154,7 +156,7 @@ class cobbler (
   }
   file { "${::cobbler::params::proxy_config_prefix}/proxy_cobbler.conf":
     content => template('cobbler/proxy_cobbler.conf.erb'),
-    notify  => Service[$apache_service],
+    notify  => Service['httpd'],
   }
   file { $distro_path :
     ensure => directory,
@@ -166,13 +168,13 @@ class cobbler (
   }
   file { '/etc/cobbler/settings':
     content => template('cobbler/settings.erb'),
-    require => Package[$package_name],
-    notify  => Service[$service_name],
+    require => Package['cobbler'],
+    notify  => Service['cobbler'],
   }
   file { '/etc/cobbler/modules.conf':
     content => template('cobbler/modules.conf.erb'),
-    require => Package[$package_name],
-    notify  => Service[$service_name],
+    require => Package['cobbler'],
+    notify  => Service['cobbler'],
   }
   file { "${::cobbler::params::http_config_prefix}/distros.conf": content => template('cobbler/distros.conf.erb'), }
   file { "${::cobbler::params::http_config_prefix}/cobbler.conf": content => template('cobbler/cobbler.conf.erb'), }
@@ -181,24 +183,25 @@ class cobbler (
   exec { 'cobblersync':
     command     => '/usr/bin/cobbler sync',
     refreshonly => true,
+    require     => [ Service['cobbler'], Service['httpd'] ],
   }
 
   # resource defaults
   resources { 'cobblerdistro':
     purge   => $purge_distro,
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   resources { 'cobblerrepo':
     purge   => $purge_repo,
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   resources { 'cobblerprofile':
     purge   => $purge_profile,
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   resources { 'cobblersystem':
     purge   => $purge_system,
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
 
   # create resources from hiera

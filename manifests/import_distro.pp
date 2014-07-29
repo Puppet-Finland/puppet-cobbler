@@ -8,7 +8,7 @@ define cobbler::import_distro ($arch,$path,$available_as) {
     arch    => $arch,
     path    => $path,
     ks_meta => { tree => $available_as },
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   $defaultrootpw = $::cobbler::defaultrootpw
   file { "${::cobbler::distro_path}/kickstarts/${distro}.ks":
