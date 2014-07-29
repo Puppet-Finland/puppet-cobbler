@@ -27,7 +27,11 @@ class cobbler::dhcp (
   service { 'dhcpd':
     ensure  => running,
     name    => $service,
-    require => Package['dhcp'],
+    require => [
+      File['/etc/cobbler/dhcp.template'],
+      Package['dhcp'],
+      Exec['cobblersync'],
+    ],
   }
 
   file { '/etc/cobbler/dhcp.template':
@@ -37,6 +41,7 @@ class cobbler::dhcp (
     mode    => '0644',
     require => Package['cobbler'],
     content => template('cobbler/dhcp.template.erb'),
+    notify  => Exec['cobblersync'],
   }
 
 }
