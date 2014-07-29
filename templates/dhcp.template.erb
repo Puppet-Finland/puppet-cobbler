@@ -18,6 +18,7 @@ allow bootp;
 ignore client-updates;
 set vendorclass = option vendor-class-identifier;
 
+<% unless @dhcp_interfaces == '' or @dhcp_interfaces.nil? -%>
 <% @dhcp_interfaces.each do |iface| -%>
 subnet <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.0 netmask 255.255.255.0 {
     option domain-name          "<%= @domain %>";
@@ -38,7 +39,8 @@ end %>;
     next-server                 $next_server;
 }
 <% end -%>
-<% if @dhcp_subnets != '' -%>
+<% end -%>
+<% unless @dhcp_subnets == '' or @dhcp_subnets.nil? -%>
 <% @dhcp_subnets.each do |dhcp_subnet| -%>
 <% dhcp_subnet_split   = dhcp_subnet.split('/') -%>
 subnet <%= dhcp_subnet_split[0] %> netmask <%= dhcp_subnet_split[1] %> {
