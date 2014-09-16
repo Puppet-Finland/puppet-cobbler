@@ -213,7 +213,7 @@ class cobbler (
   }
 
   # include ISC DHCP only if we choose manage_dhcp
-  if $manage_dhcp == '1' {
+  if $manage_dhcp == '1' and $dhcp_option == 'isc' {
     include ::cobbler::dhcp
   }
 

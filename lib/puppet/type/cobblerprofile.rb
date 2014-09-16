@@ -25,7 +25,6 @@ cobblerprofile {'CentOS-6.3-x86_64':
   end
 
   newproperty(:parent) do
-    defaultto ''
     desc 'Parent profile that this profile is based on'
   end
   autorequire(:cobblerprofile) do
