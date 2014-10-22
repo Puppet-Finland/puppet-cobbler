@@ -28,6 +28,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
         :kickstart        => member['kickstart'],
         :kernel_options   => member['kernel_options'],
         :comment          => member['comment'],
+        :server           => member['server'],
         :virt_auto_boot   => member['virt_auto_boot'].to_s.sub(/^1$/,'true').sub(/^0$/,'false'),
         :virt_bridge      => member['virt_bridge'],
         :virt_disk_driver => member['virt_disk_driver'],
@@ -138,6 +139,12 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       @property_hash[:comment]=(value)
     end
 
+    # sets server
+    def server=(value)
+      cobbler('profile', 'edit', '--name=' + @resource[:name], '--server=' + value)
+      @property_hash[:server]=(value)
+    end
+
     # sets virt-auto-boot
     def virt_auto_boot=(value)
       tmparg='--virt-auto-boot=' + if value.to_s =~ /false/i then '0' else  '1' end
@@ -211,6 +218,7 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
       self.search           = @resource.should(:search)           unless @resource[:search].nil?           or self.search           == @resource.should(:search)
       self.repos            = @resource.should(:repos)            unless @resource[:repos].nil?            or self.repos            == @resource.should(:repos)
       self.comment          = @resource.should(:comment)          unless @resource[:comment].nil?          or self.comment          == @resource.should(:comment)
+      self.server           = @resource.should(:server)           unless @resource[:server].nil?           or self.server           == @resource.should(:server)
       self.virt_auto_boot   = @resource.should(:virt_auto_boot)   unless @resource[:virt_auto_boot].nil?   or self.virt_auto_boot   == @resource.should(:virt_auto_boot)
       self.virt_bridge      = @resource.should(:virt_bridge)      unless @resource[:virt_bridge].nil?      or self.virt_bridge      == @resource.should(:virt_bridge)
       self.virt_disk_driver = @resource.should(:virt_disk_driver) unless @resource[:virt_disk_driver].nil? or self.virt_disk_driver == @resource.should(:virt_disk_driver)

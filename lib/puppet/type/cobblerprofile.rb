@@ -102,6 +102,11 @@ cobblerprofile {'CentOS-6.3-x86_64':
     desc 'Human readable description of this profile.'
   end
 
+  newproperty(:server) do
+    desc 'Server Override'
+    defaultto ''
+  end
+
   newproperty(:virt_auto_boot) do
     desc 'Virt Auto Boot (Auto boot this VM?)'
     newvalues(:true, :false)
