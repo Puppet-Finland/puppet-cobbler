@@ -104,7 +104,6 @@ cobblerprofile {'CentOS-6.3-x86_64':
 
   newproperty(:server) do
     desc 'Server Override'
-    defaultto ''
   end
 
   newproperty(:virt_auto_boot) do
