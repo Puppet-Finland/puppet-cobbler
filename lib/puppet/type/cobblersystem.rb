@@ -58,11 +58,14 @@ cobblersystem { 'test.domain.com':
       # check if something was added or removed on second level
       is.each do |is_key,is_value|
         if is_value.is_a?(Hash)
-          # hack for 'management' setting (which is being read all the time)
+          # hack for settings which are read all the time
           should[is_key]['management'] = false unless should[is_key].has_key?('management')
+          should[is_key]['static']     = false unless should[is_key].has_key?('static')
+          # replace mac_address with mac (if mac used in should)
+          is_value['mac'] = is_value.delete 'mac_address' if (is_value.has_key?('mac_address') and should[is_key].has_key?('mac'))
           # check every key in puppet manifest, leave the rest
           should[is_key].keys.uniq.each do |key|
-            return false unless should[key].to_s != is_value[key].to_s
+            return false if should[is_key][key].to_s != is_value[key].to_s
           end
         end
       end
