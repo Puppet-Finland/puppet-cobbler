@@ -185,7 +185,11 @@ TODO
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+This module was tested with following operating systems:
+* CentOS 5/6
+* Ubuntu LTS 12.04/14.04
+
+Module is tested against Cobbler 2.4 & 2.6.
 
 ## Development
 
