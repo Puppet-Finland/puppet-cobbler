@@ -249,7 +249,6 @@ class cobbler (
     require => [ Service['cobbler'], Service['httpd'] ],
     noop    => $noops,
   }
-  }
   resources { 'cobblerrepo':
     purge   => $purge_repo,
     require => [ Service['cobbler'], Service['httpd'] ],
