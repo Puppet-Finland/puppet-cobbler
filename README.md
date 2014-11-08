@@ -91,6 +91,7 @@ You can easily add distros to your Cobbler installation just by specifying downl
       arch    => 'x86_64',
       isolink => 'http://mi.mirror.garr.it/mirrors/CentOS/6.5/isos/x86_64/CentOS-6.5-x86_64-bin-DVD1.iso',
     }
+```
 
 If you want to use 'cobbler import' style, you can add a distro other way:
 
