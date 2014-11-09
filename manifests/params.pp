@@ -40,25 +40,13 @@ class cobbler::params {
   }
   $package_ensure = 'present'
 
-  # class containing all module dependencies
-  $dependency_class = '::cobbler::dependency'
-
-  # location of the cobbler web root
-  $webroot = '/var/www/cobbler'
-
   # general settings
   $next_server_ip = $::ipaddress
   $server_ip      = $::ipaddress
-  $nameservers    = '127.0.0.1'
-
-  # default root password for kickstart files
-  $defaultrootpw = 'bettergenerateityourself'
 
   # dhcp options
   $manage_dhcp        = 0
   $dhcp_option        = 'isc'
-  $dhcp_interfaces    = 'eth0'
-  $dhcp_subnets       = ''
   $dhcp_dynamic_range = 0
 
   # dns options

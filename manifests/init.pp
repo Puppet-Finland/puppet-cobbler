@@ -1,99 +1,137 @@
-# Class: cobbler
 #
-# This class manages Cobbler
-# https://fedorahosted.org/cobbler/
+# == Class: cobbler
 #
-# Parameters:
+# This class manages Cobbler ( http://www.cobblerd.org/ )
 #
-#   - $service_name [type: string]
-#     Name of the cobbler service, defaults to 'cobblerd'.
+
+# === Parameters
 #
-#   - $package_name [type: string]
-#     Name of the installation package, defaults to 'cobbler'
+# [*service_name*]
+#   Type: string, default: $::osfamily based
+#   Name of the cobbler service
 #
-#   - $package_ensure [type: string]
-#     Defaults to 'present', buy any version can be set
+# [*package_name*]
+#   Type: string, default: $::osfamily based
+#   Name of the cobbler package
 #
-#   - $distro_path [type: string]
-#     Defines the location on disk where distro files will be
-#     stored. Contents of the ISO images will be copied over
-#     in these directories, and also kickstart files will be
-#     stored. Defaults to '/distro'
+# [*package_ensure*]
+#   Type: string, default: 'present'
+#   Can be used to set package version
 #
-#   - $manage_dhcp [type: bool]
-#     Wether or not to manage ISC DHCP.
+# [*distro_path*]
+#   Type: string, default: $::osfamily based
+#   Defines the location on disk where distro files will be
+#   stored. Contents of the ISO images will be copied over
+#   in these directories, and also kickstart files will be
+#   stored.
 #
-#   - $dhcp_dynamic_range [type: string]
-#     Range for DHCP server
+# [*manage_dhcp*]
+#   Type: bool, default: false
+#   Wether or not to manage ISC DHCP.
 #
-#   - $manage_dns [type: string]
-#     Wether or not to manage DNS
+# [*dhcp_dynamic_range*]
+#   Type: string, default: '0'
+#   Range for DHCP server
 #
-#   - $dns_option [type: string]
-#     Which DNS deamon to manage - Bind or dnsmasq. If dnsmasq,
-#     then dnsmasq has to be used for DHCP too.
+# [*manage_dns*]
+#   Type: string, default: false
+#   Wether or not to manage DNS
 #
-#   - $manage_tftpd [type: bool]
-#     Wether or not to manage TFTP daemon.
+# [*dns_option*]
+#   Type: string, default: 'dnsmasq'
+#   Which DNS deamon to manage - Bind or dnsmasq. If dnsmasq,
+#   then dnsmasq has to be used for DHCP too.
 #
-#   - $tftpd_option [type:string]
-#     Which TFTP daemon to use.
+# [*manage_tftpd*]
+#   Type: bool, default: true
+#   Wether or not to manage TFTP daemon.
 #
-#   - $server_ip [type: string]
-#     IP address of a server.
+# [*tftpd_option*]
+#   Type: string, default: 'in_tftpd'
+#   Which TFTP daemon to use.
 #
-#   - $next_server_ip [type: string]
-#     Next Server in cobbler config.
+# [*server_ip*]
+#   Type: string, default: $::ipaddress
+#   IP address of a Cobbler server.
 #
-#   - $nameservers [type: array]
-#     Nameservers for kickstart files to put in resolv.conf upon
-#     installation.
+# [*next_server_ip*]
+#   Type: string, default: $::ipaddress
+#   Next server in PXE chain.
 #
-#   - $dhcp_interfaces [type: array]
-#     Interface for DHCP to listen on.
+# [*nameservers*]
+#   Type: array, default: [ '8.8.8.8', '8.8.4.4' ]
+#   Nameservers for kickstart files to put in resolv.conf upon
+#   installation.
 #
-#   - $dhcp_subnets [type: array]
-#     If you use *DHCP relay* on your network, then $dhcp_interfaces
-#     won't suffice. $dhcp_subnets have to be defined, otherwise,
-#     DHCP won't offer address to a machine in a network that's
-#     not directly available on the DHCP machine itself.
+# [*dhcp_interfaces*]
+#   Type: array, default: [ 'eth0' ]
+#   Interface for DHCP to listen on.
 #
-#   - $defaultrootpw [type: string]
-#     Hash of root password for kickstart files.
+# [*dhcp_subnets*]
+#   Type: array, default: 
+#   If you use *DHCP relay* on your network, then $dhcp_interfaces
+#   won't suffice. $dhcp_subnets have to be defined, otherwise,
+#   DHCP won't offer address to a machine in a network that's
+#   not directly available on the DHCP machine itself.
 #
-#   - $apache_service [type: string]
-#     Name of the apache service.
+# [*defaultrootpw*]
+#   Type: string, default: $::osfamily based
+#   Hash of root password for kickstart files.
 #
-#   - $allow_access [type: string]
-#     For what IP addresses/hosts will access to cobbler_api be granted.
-#     Default is for server_ip, ::ipaddress and localhost
+# [*apache_service*]
+#   Type: string, default: $::osfamily based
+#   Name of the apache service.
 #
-#   - $purge_distro  [type: bool]
-#   - $purge_repo    [type: bool]
-#   - $purge_profile [type: bool]
-#   - $purge_system  [type: bool]
-#     Decides wether or not to purge (remove) from cobbler distro,
-#     repo, profiles and systems which are not managed by puppet.
-#     Default is false.
+# [*allow_access*]
+#   Type: string, default: "${server_ip} ${::ipaddress} 127.0.0.1"
+#   Allow access to cobbler_api from following IP addresses.
 #
-#   - default_kickstart [type: string]
-#     Location of the default kickstart. Default depends on $::osfamily.
+# [*purge_distro*]
+# [*purge_repo*]
+# [*purge_profile*]
+# [*purge_system*]
+#   Type: bool, default: false
+#   Decides wether or not to purge (remove) distros, repos, profiles
+#   and/or systems which are not managed by puppet.
 #
-#   - webroot [type: string]
-#     Location of Cobbler's web root. Default: '/var/www/cobbler'.
+# [*default_kickstart*]
+#   Type: string, default: $::osfamily based
+#   Location of the default kickstart file.
 #
-#   - create_resources [type: bool]
-#     Automatically create resources from hiera hashes. Default: false
+# [*webroot*]
+#   Type: string, default: '/var/www/cobbler'
+#   Location of Cobbler's web root.
 #
-# Actions:
-#   - Install Cobbler
-#   - Manage Cobbler service
+# [*create_resources*]
+#   Type: bool, default: false
+#   Automatically create resources from hiera hashes.
 #
-# Requires:
-#   - puppetlabs/apache class
-#     (http://forge.puppetlabs.com/puppetlabs/apache)
+# [*dependency_class*]
+#   Type: string, default: ::cobbler::dependency
+#   Name of a class that contains resources needed by this module but provided
+#   by external modules. Set to undef to not include any dependency class.
 #
-# Sample Usage:
+# [*my_class*]
+#   Type: string, default: undef
+#   Name of a custom class to autoload to manage module's customizations
+#
+# [*noops*]
+#   Type: boolean, default: undef
+#   Set noop metaparameter to true for all the resources managed by the module.
+#   If true no real change is done is done by the module on the system.
+#
+# === Requires
+#
+# - puppetlabs/apache class
+#   (http://forge.puppetlabs.com/puppetlabs/apache)
+#
+# === Examples
+#
+#  include ::cobbler
+#
+# === Copyright
+#
+# Copyright 2014 Jakov Sosic <jsosic@gmail.com>
 #
 class cobbler (
   $service_name       = $::cobbler::params::service_name,
@@ -109,10 +147,10 @@ class cobbler (
   $tftpd_option       = $::cobbler::params::tftpd_option,
   $server_ip          = $::cobbler::params::server_ip,
   $next_server_ip     = $::cobbler::params::next_server_ip,
-  $nameservers        = $::cobbler::params::nameservers,
-  $dhcp_interfaces    = $::cobbler::params::dhcp_interfaces,
-  $dhcp_subnets       = $::cobbler::params::dhcp_subnets,
-  $defaultrootpw      = $::cobbler::params::defaultrootpw,
+  $nameservers        = [ '8.8.8.8', '8.8.4.4' ],
+  $dhcp_interfaces    = [ 'eth0' ],
+  $dhcp_subnets       = '',
+  $defaultrootpw      = 'bettergenerateityourself',
   $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
   $purge_distro       = false,
@@ -120,10 +158,12 @@ class cobbler (
   $purge_profile      = false,
   $purge_system       = false,
   $default_kickstart  = $::cobbler::params::default_kickstart,
-  $webroot            = $::cobbler::params::webroot,
+  $webroot            = '/var/www/cobbler',
   $auth_module        = $::cobbler::params::auth_module,
   $create_resources   = false,
-  $dependency_class   = $::cobbler::params::dependency_class,
+  $dependency_class   = '::cobbler::dependency',
+  $my_class           = undef,
+  $noops              = undef,
 ) inherits cobbler::params {
 
   # include dependencies
@@ -132,12 +172,21 @@ class cobbler (
   }
 
   # install section
-  package { $::cobbler::params::tftp_package:     ensure => present, }
-  package { $::cobbler::params::syslinux_package: ensure => present, }
+  package { $::cobbler::params::tftp_package :
+    ensure => present,
+    noop   => $noops,
+  }
+
+  package { $::cobbler::params::syslinux_package :
+    ensure => present,
+    noop   => $noops,
+  }
+
   package { 'cobbler':
     ensure  => $package_ensure,
     name    => $package_name,
     require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
+    noop    => $noops,
   }
 
   service { 'cobbler':
@@ -145,6 +194,7 @@ class cobbler (
     name    => $service_name,
     enable  => true,
     require => [ Package['cobbler'], File["${distro_path}/kickstarts"] ],
+    noop    => $noops,
   }
 
   # file defaults
@@ -153,29 +203,36 @@ class cobbler (
     owner  => root,
     group  => root,
     mode   => '0644',
+    noop   => $noops,
   }
+
   file { "${::cobbler::params::proxy_config_prefix}/proxy_cobbler.conf":
     content => template('cobbler/proxy_cobbler.conf.erb'),
     notify  => Service['httpd'],
   }
+
   file { $distro_path :
     ensure => directory,
     mode   => '0755',
   }
+
   file { "${distro_path}/kickstarts" :
     ensure => directory,
     mode   => '0755',
   }
+
   file { '/etc/cobbler/settings':
     content => template('cobbler/settings.erb'),
     require => Package['cobbler'],
     notify  => Service['cobbler'],
   }
+
   file { '/etc/cobbler/modules.conf':
     content => template('cobbler/modules.conf.erb'),
     require => Package['cobbler'],
     notify  => Service['cobbler'],
   }
+
   file { "${::cobbler::params::http_config_prefix}/distros.conf": content => template('cobbler/distros.conf.erb'), }
   file { "${::cobbler::params::http_config_prefix}/cobbler.conf": content => template('cobbler/cobbler.conf.erb'), }
 
@@ -190,18 +247,22 @@ class cobbler (
   resources { 'cobblerdistro':
     purge   => $purge_distro,
     require => [ Service['cobbler'], Service['httpd'] ],
+    noop    => $noops,
   }
   resources { 'cobblerrepo':
     purge   => $purge_repo,
     require => [ Service['cobbler'], Service['httpd'] ],
+    noop    => $noops,
   }
   resources { 'cobblerprofile':
     purge   => $purge_profile,
     require => [ Service['cobbler'], Service['httpd'] ],
+    noop    => $noops,
   }
   resources { 'cobblersystem':
     purge   => $purge_system,
     require => [ Service['cobbler'], Service['httpd'] ],
+    noop    => $noops,
   }
 
   # create resources from hiera
