@@ -233,6 +233,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     self.virt_disk_driver = @resource.should(:virt_disk_driver) unless @resource[:virt_disk_driver].nil? or self.virt_disk_driver == @resource.should(:virt_disk_driver)
     self.virt_file_size   = @resource.should(:virt_file_size)   unless @resource[:virt_file_size].nil?   or self.virt_file_size   == @resource.should(:virt_file_size)
     self.virt_cpus        = @resource.should(:virt_cpus)        unless @resource[:virt_cpus].nil?        or self.virt_cpus        == @resource.should(:virt_cpus)
+    self.virt_path        = @resource.should(:virt_path)        unless @resource[:virt_path].nil?        or self.virt_path        == @resource.should(:virt_path)
     self.virt_ram         = @resource.should(:virt_ram)         unless @resource[:virt_ram].nil?         or self.virt_ram         == @resource.should(:virt_ram)
     self.virt_type        = @resource.should(:virt_type)        unless @resource[:virt_type].nil?        or self.virt_type        == @resource.should(:virt_type)
 
