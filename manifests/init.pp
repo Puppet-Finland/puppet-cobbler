@@ -26,7 +26,11 @@
 #
 # [*manage_dhcp*]
 #   Type: bool, default: false
-#   Wether or not to manage ISC DHCP.
+#   Whether or not to manage ISC DHCP.
+#
+# [*dhcp_option*]
+#   Type: string, default 'isc'
+#   Which DHCP server to use. Valid values are 'isc' and 'dnsmasq'.
 #
 # [*dhcp_dynamic_range*]
 #   Type: string, default: '0'
@@ -47,7 +51,7 @@
 #
 # [*tftpd_option*]
 #   Type: string, default: 'in_tftpd'
-#   Which TFTP daemon to use.
+#   Which TFTP daemon to use. Only valid value for now is 'in_tftpd'.
 #
 # [*server_ip*]
 #   Type: string, default: $::ipaddress
@@ -137,10 +141,10 @@ class cobbler (
   $manage_dhcp        = false,
   $dhcp_dynamic_range = $::cobbler::params::dhcp_dynamic_range,
   $manage_dns         = false,
-  $dns_option         = $::cobbler::params::dns_option,
-  $dhcp_option        = $::cobbler::params::dhcp_option,
+  $dns_option         = 'dnsmasq',
+  $dhcp_option        = 'isc',
   $manage_tftpd       = true,
-  $tftpd_option       = $::cobbler::params::tftpd_option,
+  $tftpd_option       = 'in_tftpd',
   $server_ip          = $::cobbler::params::server_ip,
   $next_server_ip     = $::cobbler::params::next_server_ip,
   $nameservers        = [ '8.8.8.8', '8.8.4.4' ],
@@ -174,6 +178,9 @@ class cobbler (
   validate_bool($manage_dhcp)
   validate_bool($manage_dns)
   validate_bool($manage_tftpd)
+  validate_re($dhcp_option, ['^isc$', '^dnsmasq$'])
+  validate_re($dns_option, ['^bind$', '^dnsmasq$'])
+  validate_re($tftpd_option, ['^in_tftpd$'])
 
   # include dependencies
   if $::cobbler::dependency_class {
