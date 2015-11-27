@@ -11,7 +11,6 @@ class cobbler::params {
       $tftp_package        = 'tftp-server'
       $syslinux_package    = 'syslinux'
       $dhcp_package        = 'dhcp'
-      $dhcp_version        = 'present'
       $dhcp_service        = 'dhcpd'
       $http_config_prefix  = '/etc/httpd/conf.d'
       $proxy_config_prefix = '/etc/httpd/conf.d'
@@ -26,7 +25,6 @@ class cobbler::params {
       $tftp_package        = 'tftpd-hpa'
       $syslinux_package    = 'syslinux'
       $dhcp_package        = 'isc-dhcp-server'
-      $dhcp_version        = 'present'
       $dhcp_service        = 'isc-dhcp-server'
       $http_config_prefix  = '/etc/apache2/conf.d'
       $proxy_config_prefix = '/etc/apache2/conf.d'
@@ -38,8 +36,6 @@ class cobbler::params {
       fail("Unsupported osfamily: ${::osfamily} operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports osfamily RedHat")
     }
   }
-  $package_ensure = 'present'
-
   # general settings
   $next_server_ip = $::ipaddress
   $server_ip      = $::ipaddress

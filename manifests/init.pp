@@ -5,10 +5,6 @@
 #
 # === Parameters
 #
-# [*package_ensure*]
-#   Type: string, default: 'present'
-#   Can be used to set package version
-#
 # [*distro_path*]
 #   Type: string, default: $::osfamily based
 #   Defines the location on disk where distro files will be
@@ -125,7 +121,6 @@
 # Copyright 2015 Samuli Seppänen <samuli.seppanen@gmail.com>
 #
 class cobbler (
-  $package_ensure     = $::cobbler::params::package_ensure,
   $distro_path        = $::cobbler::params::distro_path,
   $manage_dhcp        = false,
   $dhcp_dynamic_range = false,
@@ -176,7 +171,6 @@ class cobbler (
   }
 
   class { '::cobbler::install':
-    package_ensure => $package_ensure,
     noops          => $noops,
   }
 
@@ -237,6 +231,11 @@ class cobbler (
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp and $dhcp_option == 'isc' {
-    include ::cobbler::dhcp
+    class { '::cobbler::dhcp':
+      nameservers   => $nameservers,
+      interfaces    => $dhcp_interfaces,
+      subnets       => $dhcp_subnets,
+      dynamic_range => $dhcp_dynamic_range,
+    }
   }
 }

@@ -4,7 +4,6 @@
 #
 class cobbler::install
 (
-  $package_ensure,
   $noops,
 
 ) inherits cobbler::params
@@ -16,9 +15,7 @@ class cobbler::install
 
   package { $::cobbler::params::tftp_package: }
   package { $::cobbler::params::syslinux_package: }
-  package { 'cobbler':
-    ensure  => $package_ensure,
-    name    => $::cobbler::params::package_name,
+  package { $::cobbler::params::package_name:
     require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
   }
 }
