@@ -98,6 +98,12 @@
 #   Type: string, default: '/var/www/cobbler'
 #   Location of Cobbler's web root.
 #
+# [*auth_module*]
+#   Type: string, default 'authn_denyall'.
+#   Use authentication module that determines who can log into the WebUI and 
+#   read and write XMLRPC. See templates/modules.conf.erb for the options and 
+#   their descriptions.
+#
 # [*dependency_class*]
 #   Type: string, default: ::cobbler::dependency
 #   Name of a class that contains resources needed by this module but provided
@@ -150,7 +156,7 @@ class cobbler (
   $purge_system       = false,
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = '/var/www/cobbler',
-  $auth_module        = $::cobbler::params::auth_module,
+  $auth_module        = 'authn_denyall',
   $dependency_class   = '::cobbler::dependency',
   $my_class           = undef,
   $noops              = undef,
@@ -172,6 +178,7 @@ class cobbler (
   validate_re($dhcp_option, ['^isc$', '^dnsmasq$'])
   validate_re($dns_option, ['^bind$', '^dnsmasq$'])
   validate_re($tftpd_option, ['^in_tftpd$'])
+  validate_string($auth_module)
 
   # include dependencies
   if $::cobbler::dependency_class {

@@ -52,8 +52,4 @@ class cobbler::params {
   # depends on apache
   # access, regulated through Proxy directive
   $allow_access = "${server_ip} ${::ipaddress} 127.0.0.1"
-
-  # authorization
-  $auth_module = 'authn_denyall'
-
 }
