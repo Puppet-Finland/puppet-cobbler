@@ -40,7 +40,7 @@ end %>;
 }
 <% end -%>
 <% end -%>
-<% unless @dhcp_subnets == '' or @dhcp_subnets.nil? -%>
+<% if @dhcp_subnets -%>
 <% @dhcp_subnets.each do |dhcp_subnet| -%>
 <% dhcp_subnet_split   = dhcp_subnet.split('/') -%>
 subnet <%= dhcp_subnet_split[0] %> netmask <%= dhcp_subnet_split[1] %> {

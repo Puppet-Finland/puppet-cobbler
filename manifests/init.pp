@@ -64,7 +64,7 @@
 #   Interface for DHCP to listen on.
 #
 # [*dhcp_subnets*]
-#   Type: array, default: 
+#   Type: array, default: undef
 #   If you use *DHCP relay* on your network, then $dhcp_interfaces
 #   won't suffice. $dhcp_subnets have to be defined, otherwise,
 #   DHCP won't offer address to a machine in a network that's
@@ -146,7 +146,7 @@ class cobbler (
   $next_server_ip     = $::cobbler::params::next_server_ip,
   $nameservers        = [ '8.8.8.8', '8.8.4.4' ],
   $dhcp_interfaces    = [ 'eth0' ],
-  $dhcp_subnets       = '',
+  $dhcp_subnets       = undef,
   $defaultrootpw      = 'bettergenerateityourself',
   $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
@@ -179,6 +179,11 @@ class cobbler (
   validate_re($dns_option, ['^bind$', '^dnsmasq$'])
   validate_re($tftpd_option, ['^in_tftpd$'])
   validate_string($auth_module)
+
+  # Only validate the parameter if it has been defined
+  if $dhcp_subnets {
+    validate_array($dhcp_subnets)
+  }
 
   # include dependencies
   if $::cobbler::dependency_class {
