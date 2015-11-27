@@ -6,7 +6,8 @@ class cobbler::install
 (
   $package_ensure,
   $noops,
-)
+
+) inherits cobbler::params
 {
   Package {
     ensure => present,

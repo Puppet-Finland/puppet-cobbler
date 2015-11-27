@@ -7,7 +7,8 @@ class cobbler::service
 (
   $distro_path,
   $noops,
-)
+
+) inherits cobbler::params
 {
   service { 'cobbler':
     ensure  => running,
