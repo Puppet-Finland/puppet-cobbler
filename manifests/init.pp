@@ -74,10 +74,6 @@
 #   Type: string, default: $::osfamily based
 #   Hash of root password for kickstart files.
 #
-# [*apache_service*]
-#   Type: string, default: $::osfamily based
-#   Name of the apache service.
-#
 # [*allow_access*]
 #   Type: string, default: "${server_ip} ${::ipaddress} 127.0.0.1"
 #   Allow access to cobbler_api from following IP addresses.
@@ -130,6 +126,7 @@
 # === Copyright
 #
 # Copyright 2014 Jakov Sosic <jsosic@gmail.com>
+#
 # Copyright 2015 Samuli Seppänen <samuli.seppanen@gmail.com>
 #
 class cobbler (
@@ -148,7 +145,6 @@ class cobbler (
   $dhcp_interfaces    = [ 'eth0' ],
   $dhcp_subnets       = undef,
   $defaultrootpw      = 'bettergenerateityourself',
-  $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
   $purge_distro       = false,
   $purge_repo         = false,
@@ -167,23 +163,17 @@ class cobbler (
 
 ) inherits cobbler::params {
 
-  # Parameter validation
+  # Validate parameters that are used in this class
   validate_hash($distros)
   validate_hash($repos)
   validate_hash($profiles)
   validate_hash($systems)
   validate_bool($manage_dhcp)
-  validate_bool($manage_dns)
-  validate_bool($manage_tftpd)
   validate_re($dhcp_option, ['^isc$', '^dnsmasq$'])
-  validate_re($dns_option, ['^bind$', '^dnsmasq$'])
-  validate_re($tftpd_option, ['^in_tftpd$'])
-  validate_string($auth_module)
 
   # Some parameters are optional and should only be validated if they have been 
   # defined
-  if $dhcp_subnets { validate_array($dhcp_subnets) }
-  if $noops        { validate_bool($noops)         }
+  if $noops { validate_bool($noops) }
 
   # include dependencies
   if $::cobbler::dependency_class {
@@ -195,62 +185,34 @@ class cobbler (
     noops          => $noops,
   }
 
+  class { '::cobbler::config':
+    distro_path        => $distro_path,
+    manage_dhcp        => $manage_dhcp,
+    dhcp_dynamic_range => $dhcp_dynamic_range,
+    manage_dns         => $manage_dns,
+    dns_option         => $dns_option,
+    dhcp_option        => $dhcp_option,
+    manage_tftpd       => $manage_tftpd,
+    tftpd_option       => $tftpd_option,
+    server_ip          => $server_ip,
+    next_server_ip     => $next_server_ip,
+    nameservers        => $nameservers,
+    dhcp_interfaces    => $dhcp_interfaces,
+    dhcp_subnets       => $dhcp_subnets,
+    defaultrootpw      => $defaultrootpw,
+    allow_access       => $allow_access,
+    default_kickstart  => $default_kickstart,
+    webroot            => $webroot,
+    auth_module        => $auth_module,
+    noops              => $noops,
+  }
+
   class { '::cobbler::service':
     distro_path => $distro_path,
     noops       => $noops,
   }
 
-  # file defaults
-  File {
-    ensure => file,
-    owner  => root,
-    group  => root,
-    mode   => '0644',
-    noop   => $noops,
-  }
-
-  file { "${::cobbler::params::proxy_config_prefix}/proxy_cobbler.conf":
-    content => template('cobbler/proxy_cobbler.conf.erb'),
-    notify  => Service['httpd'],
-  }
-
-  file { $distro_path :
-    ensure => directory,
-    mode   => '0755',
-  }
-
-  file { "${distro_path}/kickstarts" :
-    ensure => directory,
-    mode   => '0755',
-  }
-
-  $manage_dhcp_int = bool2num($manage_dhcp)
-  $manage_dns_int = bool2num($manage_dns)
-  $manage_tftpd_int = bool2num($manage_tftpd)
-
-  file { '/etc/cobbler/settings':
-    content => template('cobbler/settings.erb'),
-    require => Package['cobbler'],
-    notify  => Service['cobbler'],
-  }
-
-  file { '/etc/cobbler/modules.conf':
-    content => template('cobbler/modules.conf.erb'),
-    require => Package['cobbler'],
-    notify  => Service['cobbler'],
-  }
-
-  file { "${::cobbler::params::http_config_prefix}/distros.conf": content => template('cobbler/distros.conf.erb'), }
-  file { "${::cobbler::params::http_config_prefix}/cobbler.conf": content => template('cobbler/cobbler.conf.erb'), }
-
-  # cobbler sync command
-  exec { 'cobblersync':
-    command     => '/usr/bin/cobbler sync',
-    refreshonly => true,
-    require     => [ Service['cobbler'], Service['httpd'] ],
-  }
-
-  # resource defaults
+  # Cobbler resource defaults
   resources { 'cobblerdistro':
     purge   => $purge_distro,
     require => [ Service['cobbler'], Service['httpd'] ],
@@ -282,10 +244,4 @@ class cobbler (
   if $manage_dhcp and $dhcp_option == 'isc' {
     include ::cobbler::dhcp
   }
-
-  # logrotate script
-  file { '/etc/logrotate.d/cobbler':
-    source => 'puppet:///modules/cobbler/logrotate',
-  }
 }
-# vi:nowrap:
