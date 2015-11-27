@@ -201,3 +201,4 @@ Cobbler module Forge is open project, and community contributions are welcome.
 
 * jsosic (jsosic@gmail.com) - original author
 * igalic (i.galic@brainsware.org) - advancement in virtual environments and Debian based support
+* mattock (samuli.seppanen@gmail.com) - general cleanup

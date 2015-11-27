@@ -3,7 +3,6 @@
 #
 # This class manages Cobbler ( http://www.cobblerd.org/ )
 #
-
 # === Parameters
 #
 # [*service_name*]
@@ -102,10 +101,6 @@
 #   Type: string, default: '/var/www/cobbler'
 #   Location of Cobbler's web root.
 #
-# [*create_resources*]
-#   Type: bool, default: false
-#   Automatically create resources from hiera hashes.
-#
 # [*dependency_class*]
 #   Type: string, default: ::cobbler::dependency
 #   Name of a class that contains resources needed by this module but provided
@@ -132,6 +127,7 @@
 # === Copyright
 #
 # Copyright 2014 Jakov Sosic <jsosic@gmail.com>
+# Copyright 2015 Samuli Seppänen <samuli.seppanen@gmail.com>
 #
 class cobbler (
   $service_name       = $::cobbler::params::service_name,
@@ -160,11 +156,21 @@ class cobbler (
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = '/var/www/cobbler',
   $auth_module        = $::cobbler::params::auth_module,
-  $create_resources   = false,
   $dependency_class   = '::cobbler::dependency',
   $my_class           = undef,
   $noops              = undef,
+  $distros            = {},
+  $repos              = {},
+  $profiles           = {},
+  $systems            = {},
+
 ) inherits cobbler::params {
+
+  # Parameter validation
+  validate_hash($distros)
+  validate_hash($repos)
+  validate_hash($profiles)
+  validate_hash($systems)
 
   # include dependencies
   if $::cobbler::dependency_class {
@@ -265,13 +271,11 @@ class cobbler (
     noop    => $noops,
   }
 
-  # create resources from hiera
-  if ( $create_resources == true ) {
-    create_resources(cobblerdistro,  hiera_hash('cobbler::distros',  {}) )
-    create_resources(cobblerrepo,    hiera_hash('cobbler::repos',    {}) )
-    create_resources(cobblerprofile, hiera_hash('cobbler::profiles', {}) )
-    create_resources(cobblersystem,  hiera_hash('cobbler::systems',  {}) )
-  }
+  # Create Cobbler resources from hashes passed as parameters
+  create_resources(cobblerdistro,  $distros)
+  create_resources(cobblerrepo,    $repos)
+  create_resources(cobblerprofile, $profiles)
+  create_resources(cobblersystem,  $systems)
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp == '1' and $dhcp_option == 'isc' {

@@ -1,6 +1,6 @@
 {
   "name": "puppet-cobbler",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "author": "jsosic",
   "summary": "Puppet module used to deploy and manage Cobbler installation(s).",
   "license": "Apache 2.0",
