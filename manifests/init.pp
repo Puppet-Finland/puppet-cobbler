@@ -114,11 +114,6 @@
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
-# === Requires
-#
-# - puppetlabs/apache class
-#   (http://forge.puppetlabs.com/puppetlabs/apache)
-#
 # === Examples
 #
 #  include ::cobbler

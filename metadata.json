@@ -4,11 +4,12 @@
   "author": "jsosic",
   "summary": "Puppet module used to deploy and manage Cobbler installation(s).",
   "license": "Apache 2.0",
-  "source": "https://bitbucket.org/jsosic/puppet-cobbler",
+  "source": "https://github.com/Puppet-Finland/puppet-cobbler",
   "project_page": "https://bitbucket.org/jsosic/puppet-cobbler",
-  "issues_url": "https://bitbucket.org/jsosic/puppet-cobbler/issues",
+  "issues_url": "https://github.com/Puppet-Finland/puppet-cobbler/issues",
   "dependencies": [
-    {"version_requirement":">= 1.0.0","name":"puppetlabs-stdlib"}
+    { "name": "puppetfinland/apache", "version_requirement": ">= 0.6.5" },
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.0.0" }
   ]
 }
 
