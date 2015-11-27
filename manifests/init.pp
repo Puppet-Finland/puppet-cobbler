@@ -180,32 +180,19 @@ class cobbler (
   validate_re($tftpd_option, ['^in_tftpd$'])
   validate_string($auth_module)
 
-  # Only validate the parameter if it has been defined
-  if $dhcp_subnets {
-    validate_array($dhcp_subnets)
-  }
+  # Some parameters are optional and should only be validated if they have been 
+  # defined
+  if $dhcp_subnets { validate_array($dhcp_subnets) }
+  if $noops        { validate_bool($noops)         }
 
   # include dependencies
   if $::cobbler::dependency_class {
     include $::cobbler::dependency_class
   }
 
-  # install section
-  package { $::cobbler::params::tftp_package :
-    ensure => present,
-    noop   => $noops,
-  }
-
-  package { $::cobbler::params::syslinux_package :
-    ensure => present,
-    noop   => $noops,
-  }
-
-  package { 'cobbler':
-    ensure  => $package_ensure,
-    name    => $::cobbler::params::package_name,
-    require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
-    noop    => $noops,
+  class { '::cobbler::install':
+    package_ensure => $package_ensure,
+    noops          => $noops,
   }
 
   service { 'cobbler':
