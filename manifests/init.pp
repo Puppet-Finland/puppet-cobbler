@@ -33,7 +33,7 @@
 #   Range for DHCP server
 #
 # [*manage_dns*]
-#   Type: string, default: false
+#   Type: bool, default: false
 #   Wether or not to manage DNS
 #
 # [*dns_option*]
@@ -134,12 +134,12 @@ class cobbler (
   $package_name       = $::cobbler::params::package_name,
   $package_ensure     = $::cobbler::params::package_ensure,
   $distro_path        = $::cobbler::params::distro_path,
-  $manage_dhcp        = $::cobbler::params::manage_dhcp,
+  $manage_dhcp        = false,
   $dhcp_dynamic_range = $::cobbler::params::dhcp_dynamic_range,
-  $manage_dns         = $::cobbler::params::manage_dns,
+  $manage_dns         = false,
   $dns_option         = $::cobbler::params::dns_option,
   $dhcp_option        = $::cobbler::params::dhcp_option,
-  $manage_tftpd       = $::cobbler::params::manage_tftpd,
+  $manage_tftpd       = true,
   $tftpd_option       = $::cobbler::params::tftpd_option,
   $server_ip          = $::cobbler::params::server_ip,
   $next_server_ip     = $::cobbler::params::next_server_ip,
@@ -171,6 +171,9 @@ class cobbler (
   validate_hash($repos)
   validate_hash($profiles)
   validate_hash($systems)
+  validate_bool($manage_dhcp)
+  validate_bool($manage_dns)
+  validate_bool($manage_tftpd)
 
   # include dependencies
   if $::cobbler::dependency_class {
@@ -227,6 +230,10 @@ class cobbler (
     mode   => '0755',
   }
 
+  $manage_dhcp_int = bool2num($manage_dhcp)
+  $manage_dns_int = bool2num($manage_dns)
+  $manage_tftpd_int = bool2num($manage_tftpd)
+
   file { '/etc/cobbler/settings':
     content => template('cobbler/settings.erb'),
     require => Package['cobbler'],
@@ -278,7 +285,7 @@ class cobbler (
   create_resources(cobblersystem,  $systems)
 
   # include ISC DHCP only if we choose manage_dhcp
-  if $manage_dhcp == '1' and $dhcp_option == 'isc' {
+  if $manage_dhcp and $dhcp_option == 'isc' {
     include ::cobbler::dhcp
   }
 

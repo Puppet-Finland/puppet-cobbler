@@ -235,11 +235,11 @@ remove_old_puppet_certs_automatically: <%= @sign_puppet_certs_automatically %>
 
 # set to 1 to enable Cobbler's DHCP management features.
 # the choice of DHCP management engine is in /etc/cobbler/modules.conf
-manage_dhcp: <%= @manage_dhcp %>
+manage_dhcp: <%= @manage_dhcp_int %>
 
 # set to 1 to enable Cobbler's DNS management features.
 # the choice of DNS mangement engine is in /etc/cobbler/modules.conf
-manage_dns: <%= @manage_dns %>
+manage_dns: <%= @manage_dns_int %>
 
 # set to path of bind chroot to create bind-chroot compatible bind
 # configuration files.  This should be automatically detected.
@@ -251,7 +251,7 @@ bind_master: 127.0.0.1
 
 # set to 1 to enable Cobbler's TFTP management features.
 # the choice of TFTP mangement engine is in /etc/cobbler/modules.conf
-manage_tftpd: <%= @manage_tftpd %>
+manage_tftpd: <%= @manage_tftpd_int %>
 
 # set to 1 to enable Cobbler's RSYNC management features.
 manage_rsync: 0

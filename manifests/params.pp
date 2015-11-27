@@ -45,16 +45,13 @@ class cobbler::params {
   $server_ip      = $::ipaddress
 
   # dhcp options
-  $manage_dhcp        = 0
   $dhcp_option        = 'isc'
   $dhcp_dynamic_range = 0
 
   # dns options
-  $manage_dns = 0
   $dns_option = 'dnsmasq'
 
   # tftpd options
-  $manage_tftpd = 1
   $tftpd_option = 'in_tftpd'
 
   # puppet integration setup
