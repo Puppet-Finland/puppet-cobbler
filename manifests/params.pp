@@ -44,9 +44,6 @@ class cobbler::params {
   $next_server_ip = $::ipaddress
   $server_ip      = $::ipaddress
 
-  # dhcp options
-  $dhcp_dynamic_range = 0
-
   # puppet integration setup
   $puppet_auto_setup                     = 1
   $sign_puppet_certs_automatically       = 1

@@ -25,8 +25,9 @@
 #   Which DHCP server to use. Valid values are 'isc' and 'dnsmasq'.
 #
 # [*dhcp_dynamic_range*]
-#   Type: string, default: '0'
-#   Range for DHCP server
+#   Type: boolean, default: false
+#   Hand out dynamic IP addresses from the DHCP server. The dynamic address 
+#   range will be 100-200.
 #
 # [*manage_dns*]
 #   Type: bool, default: false
@@ -129,7 +130,7 @@ class cobbler (
   $package_ensure     = $::cobbler::params::package_ensure,
   $distro_path        = $::cobbler::params::distro_path,
   $manage_dhcp        = false,
-  $dhcp_dynamic_range = $::cobbler::params::dhcp_dynamic_range,
+  $dhcp_dynamic_range = false,
   $manage_dns         = false,
   $dns_option         = 'dnsmasq',
   $dhcp_option        = 'isc',
