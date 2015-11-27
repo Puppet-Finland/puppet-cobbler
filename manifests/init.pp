@@ -5,14 +5,6 @@
 #
 # === Parameters
 #
-# [*service_name*]
-#   Type: string, default: $::osfamily based
-#   Name of the cobbler service
-#
-# [*package_name*]
-#   Type: string, default: $::osfamily based
-#   Name of the cobbler package
-#
 # [*package_ensure*]
 #   Type: string, default: 'present'
 #   Can be used to set package version
@@ -134,8 +126,6 @@
 # Copyright 2015 Samuli Seppänen <samuli.seppanen@gmail.com>
 #
 class cobbler (
-  $service_name       = $::cobbler::params::service_name,
-  $package_name       = $::cobbler::params::package_name,
   $package_ensure     = $::cobbler::params::package_ensure,
   $distro_path        = $::cobbler::params::distro_path,
   $manage_dhcp        = false,
@@ -200,14 +190,14 @@ class cobbler (
 
   package { 'cobbler':
     ensure  => $package_ensure,
-    name    => $package_name,
+    name    => $::cobbler::params::package_name,
     require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
     noop    => $noops,
   }
 
   service { 'cobbler':
     ensure  => running,
-    name    => $service_name,
+    name    => $::cobbler::params::service_name,
     enable  => true,
     require => [ Package['cobbler'], File["${distro_path}/kickstarts"] ],
     noop    => $noops,
