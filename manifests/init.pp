@@ -195,12 +195,9 @@ class cobbler (
     noops          => $noops,
   }
 
-  service { 'cobbler':
-    ensure  => running,
-    name    => $::cobbler::params::service_name,
-    enable  => true,
-    require => [ Package['cobbler'], File["${distro_path}/kickstarts"] ],
-    noop    => $noops,
+  class { '::cobbler::service':
+    distro_path => $distro_path,
+    noops       => $noops,
   }
 
   # file defaults
