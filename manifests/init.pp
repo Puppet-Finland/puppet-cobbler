@@ -31,8 +31,8 @@
 #
 # [*dns_option*]
 #   Type: string, default: 'dnsmasq'
-#   Which DNS deamon to manage - Bind or dnsmasq. If dnsmasq,
-#   then dnsmasq has to be used for DHCP too.
+#   Which DNS deamon to manage - 'isc' or 'dnsmasq'. If 'dnsmasq', then dnsmasq
+#   has to be used for DHCP too.
 #
 # [*manage_tftpd*]
 #   Type: bool, default: true
