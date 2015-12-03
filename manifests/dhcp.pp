@@ -10,6 +10,7 @@ class cobbler::dhcp
   $interfaces,
   $subnets,
   $dynamic_range,
+  $netmask
 
 ) inherits cobbler::params {
 

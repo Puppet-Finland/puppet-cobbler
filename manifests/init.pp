@@ -25,14 +25,17 @@
 #   Hand out dynamic IP addresses from the DHCP server. The dynamic address 
 #   range will be 100-200.
 #
+# [*dhcp_netmask*]
+#   Netmask for the DHCP subnet. Defaults to '255.255.255.0'.
+#
 # [*manage_dns*]
 #   Type: bool, default: false
 #   Wether or not to manage DNS
 #
 # [*dns_option*]
 #   Type: string, default: 'dnsmasq'
-#   Which DNS deamon to manage - 'isc' or 'dnsmasq'. If 'dnsmasq', then dnsmasq
-#   has to be used for DHCP too.
+#   Which DNS deamon to manage - 'bind' or 'dnsmasq'. If 'dnsmasq', then
+#   dnsmasq has to be used for DHCP too.
 #
 # [*manage_tftpd*]
 #   Type: bool, default: true
@@ -124,6 +127,7 @@ class cobbler (
   $distro_path        = $::cobbler::params::distro_path,
   $manage_dhcp        = false,
   $dhcp_dynamic_range = false,
+  $dhcp_netmask       = '255.255.255.0',
   $manage_dns         = false,
   $dns_option         = 'dnsmasq',
   $dhcp_option        = 'isc',
@@ -234,6 +238,7 @@ class cobbler (
     class { '::cobbler::dhcp':
       nameservers   => $nameservers,
       interfaces    => $dhcp_interfaces,
+      netmask       => $dhcp_netmask,
       subnets       => $dhcp_subnets,
       dynamic_range => $dhcp_dynamic_range,
     }
