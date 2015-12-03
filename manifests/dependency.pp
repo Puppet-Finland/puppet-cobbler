@@ -25,6 +25,9 @@ class cobbler::dependency {
       persistent => true,
       require    => Class['apache'],
     }
-  }
 
+    selinux::module { 'cobblerlocal':
+        modulename => 'cobbler',
+    }
+  }
 }

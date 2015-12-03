@@ -1,0 +1,19 @@
+
+module cobblerlocal 1.0;
+
+require {
+	type etc_t;
+	type tftpdir_rw_t;
+	type cobblerd_t;
+	class dir rmdir;
+	class file { write create };
+}
+
+#============= cobblerd_t ==============
+allow cobblerd_t etc_t:file write;
+
+#!!!! This avc is allowed in the current policy
+allow cobblerd_t etc_t:file create;
+
+#!!!! This avc is allowed in the current policy
+allow cobblerd_t tftpdir_rw_t:dir rmdir;
