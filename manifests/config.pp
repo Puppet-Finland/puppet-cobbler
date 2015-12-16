@@ -78,8 +78,15 @@ class cobbler::config
     notify  => Class['::cobbler::service'],
   }
 
-  file { "${::cobbler::params::http_config_prefix}/distros.conf": content => template('cobbler/distros.conf.erb'), }
-  file { "${::cobbler::params::http_config_prefix}/cobbler.conf": content => template('cobbler/cobbler.conf.erb'), }
+  file { "${::cobbler::params::http_config_prefix}/distros.conf":
+    content => template('cobbler/distros.conf.erb'),
+    notify  => Class['::apache2::service'],
+  }
+
+  file { "${::cobbler::params::http_config_prefix}/cobbler.conf":
+    content => template('cobbler/cobbler.conf.erb'),
+    notify  => Class['::apache2::service'],
+  }
 
   # cobbler sync command
   exec { 'cobblersync':
