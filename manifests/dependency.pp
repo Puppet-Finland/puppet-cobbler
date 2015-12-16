@@ -5,11 +5,11 @@
 class cobbler::dependency {
 
   # require apache modules
-  include ::apache
-  include ::apache::mod::wsgi
-  include ::apache::mod::proxy
-  include ::apache::mod::proxy_http
-  include ::apache::mod::setenvif
+  include ::apache2
+  include ::apache2::config::wsgi
+  include ::apache2::config::proxy
+  include ::apache2::config::proxy_http
+  include ::apache2::config::setenvif
 
   # The selinux settings need to be tweaked before we attempt to integrate 
   # Cobbler with it.
@@ -23,7 +23,7 @@ class cobbler::dependency {
     selboolean { $cobbler_booleans:
       value      => on,
       persistent => true,
-      require    => Class['apache'],
+      require    => Class['::apache2'],
     }
 
     selinux::module { 'cobblerlocal':

@@ -8,7 +8,7 @@
   "project_page": "https://bitbucket.org/jsosic/puppet-cobbler",
   "issues_url": "https://github.com/Puppet-Finland/puppet-cobbler/issues",
   "dependencies": [
-    { "name": "puppetfinland/apache", "version_requirement": ">= 0.6.5" },
+    { "name": "puppetfinland/apache2", "version_requirement": ">= 0.6.5" },
     { "name": "puppetfinland/selinux", "version_requirement": ">= 1.0.0" },
     { "name": "puppetlabs/stdlib", "version_requirement": ">= 4.0.0" }
   ]
