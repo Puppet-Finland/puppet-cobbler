@@ -5,6 +5,8 @@
 class cobbler::web::dependency_class {
 
   # require apache modules
-  include ::apache::mod::ssl
+  #
+  # FIXME: this class is missing from Puppet-Finland
+  include ::apache2::config::ssl
 
 }
