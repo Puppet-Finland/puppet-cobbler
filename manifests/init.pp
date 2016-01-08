@@ -113,6 +113,14 @@
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
+# [*distros*]
+#   A hash of cobblerdistro resources to realize.
+# [*repos*]
+#   A hash of cobblerrepo resources to realize.
+# [*profiles*]
+#   A hash of cobblerprofile resources to realize.
+# [*systems*]
+#   A hash of cobblersystem resources to realize.
 # [*kickstarts*]
 #   A hash of cobbler::kickstart resources to realize.
 #
