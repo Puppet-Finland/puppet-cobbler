@@ -113,6 +113,9 @@
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
+# [*kickstarts*]
+#   A hash of cobbler::kickstart resources to realize.
+#
 # === Examples
 #
 #  include ::cobbler
@@ -154,6 +157,7 @@ class cobbler (
   $repos              = {},
   $profiles           = {},
   $systems            = {},
+  $kickstarts         = {}
 
 ) inherits cobbler::params {
 
@@ -162,6 +166,7 @@ class cobbler (
   validate_hash($repos)
   validate_hash($profiles)
   validate_hash($systems)
+  validate_hash($kickstarts)
   validate_bool($manage_dhcp)
   validate_re($dhcp_option, ['^isc$', '^dnsmasq$'])
 
@@ -232,6 +237,7 @@ class cobbler (
   create_resources(cobblerrepo,    $repos)
   create_resources(cobblerprofile, $profiles)
   create_resources(cobblersystem,  $systems)
+  create_resources('cobbler::kickstart', $kickstarts)
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp and $dhcp_option == 'isc' {
