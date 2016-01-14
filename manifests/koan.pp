@@ -28,7 +28,8 @@ class cobbler::koan inherits cobbler::params {
     }
 
     package { 'cobbler-koan':
-        ensure => present,
-        name   => 'koan',
+        ensure  => present,
+        name    => 'koan',
+        require => [ Class['cobbler::install'], Class['epel'] ],
     }
 }

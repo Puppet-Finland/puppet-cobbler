@@ -4,6 +4,9 @@
 # Loads standard dependencies that class 'cobbler' requires.
 class cobbler::dependency {
 
+  # Cobbler comes from the EPEL repository
+  include ::epel
+
   # require apache modules
   include ::apache2
   include ::apache2::config::wsgi
