@@ -7,7 +7,12 @@ class cobbler::dependency {
   # Cobbler comes from the EPEL repository
   include ::epel
 
-  # require apache modules
+  # Require apache modules
+  class { '::apache2':
+    # Apache needs to be running, or Cobblersync will fail
+    ensure_service => 'running',
+  }
+
   include ::apache2
   include ::apache2::config::wsgi
   include ::apache2::config::proxy
