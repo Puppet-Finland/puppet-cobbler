@@ -10,13 +10,15 @@ class cobbler::dhcp
   $interfaces,
   $subnets,
   $dynamic_range,
-  $netmask
+  $netmask,
+  $router
 
 ) inherits cobbler::params {
 
   $dhcp_interfaces    = $interfaces
   $dhcp_subnets       = $subnets
   $dhcp_dynamic_range = $dynamic_range
+  $dhcp_router        = $router
 
   package { 'dhcp':
     ensure => present,

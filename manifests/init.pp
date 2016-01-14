@@ -28,6 +28,12 @@
 # [*dhcp_netmask*]
 #   Netmask for the DHCP subnet. Defaults to '255.255.255.0'.
 #
+# [*dhcp_router]
+#   The router to advertise via DHCP. This defaults to the IP of each DHCP 
+#   interface. Note that if this parameter is defined manually, the same value 
+#   is used on every subnet. This a limitation in this module and 
+#   dhcp.template.erb in particular.
+#
 # [*manage_dns*]
 #   Type: bool, default: false
 #   Wether or not to manage DNS
@@ -139,6 +145,7 @@ class cobbler (
   $manage_dhcp        = false,
   $dhcp_dynamic_range = false,
   $dhcp_netmask       = '255.255.255.0',
+  $dhcp_router        = undef,
   $manage_dns         = false,
   $dns_option         = 'dnsmasq',
   $dhcp_option        = 'isc',
@@ -255,6 +262,7 @@ class cobbler (
       netmask       => $dhcp_netmask,
       subnets       => $dhcp_subnets,
       dynamic_range => $dhcp_dynamic_range,
+      router        => $dhcp_router,
     }
   }
 }
