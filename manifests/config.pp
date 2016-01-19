@@ -88,13 +88,6 @@ class cobbler::config
     notify  => Class['::apache2::service'],
   }
 
-  # cobbler sync command
-  exec { 'cobblersync':
-    command     => '/usr/bin/cobbler sync',
-    refreshonly => true,
-    require     => [ Class['::cobbler::service'], Class['::apache2::service'] ],
-  }
-
   # logrotate script
   file { '/etc/logrotate.d/cobbler':
     source => 'puppet:///modules/cobbler/logrotate',
