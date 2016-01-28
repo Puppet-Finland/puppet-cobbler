@@ -248,10 +248,12 @@ class cobbler (
   }
 
   # Create Cobbler resources from hashes passed as parameters
-  create_resources(cobblerdistro,  $distros)
-  create_resources(cobblerrepo,    $repos)
-  create_resources(cobblerprofile, $profiles)
-  create_resources(cobblersystem,  $systems)
+  $defaults = { 'require' => Class['cobbler::service'] }
+
+  create_resources(cobblerdistro,  $distros,  $defaults)
+  create_resources(cobblerrepo,    $repos,    $defaults)
+  create_resources(cobblerprofile, $profiles, $defaults)
+  create_resources(cobblersystem,  $systems,  $defaults)
   create_resources('cobbler::kickstart', $kickstarts)
 
   # include ISC DHCP only if we choose manage_dhcp
