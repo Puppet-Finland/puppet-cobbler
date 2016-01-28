@@ -52,8 +52,9 @@ class cobbler::config
   }
 
   file { $distro_path :
-    ensure => directory,
-    mode   => '0755',
+    ensure  => directory,
+    mode    => '0755',
+    seltype => 'cobbler_var_lib_t',
   }
 
   file { "${distro_path}/kickstarts" :
