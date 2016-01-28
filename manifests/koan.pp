@@ -10,6 +10,8 @@ class cobbler::koan inherits cobbler::params {
     #
     if ( $::operatingsystem == 'CentOS' ) and ( $::operatingsystemmajrelease == '7' ) {
 
+        include ::libvirt::params
+
         yumrepo { 'vault':
             descr    => 'Obsolete yum packages',
             baseurl  => 'http://vault.centos.org/7.0.1406/os/x86_64',
@@ -23,7 +25,7 @@ class cobbler::koan inherits cobbler::params {
             command => 'yum -y downgrade http://vault.centos.org/7.0.1406/os/x86_64/Packages/virt-install-0.10.0-20.el7.noarch.rpm http://vault.centos.org/7.0.1406/os/x86_64/Packages/virt-manager-common-0.10.0-20.el7.noarch.rpm',
             path    => ['/bin', '/usr/bin'],
             unless  => 'virt-install --version 2>&1|grep \'0.10.0\'',
-            require => Yumrepo['vault'],
+            require => [ Yumrepo['vault'], Package[$::libvirt::params::virt_install_package_name] ]
         }
     }
 
