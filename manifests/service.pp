@@ -19,9 +19,12 @@ class cobbler::service
     noop    => $noops,
   }
 
-  # cobbler sync has to be done after the service has been restarted 
+  # It seems that cobblerd takes a while to become responsive, so we need to 
+  # wait a bit before trying to run "cobbler sync". On the test node 10 seconds 
+  # seemed to be enough, whereas 5 seconds was not.
   exec { 'cobblersync':
-    command     => '/usr/bin/cobbler sync',
+    command     => 'sleep 10; cobbler sync',
+    path        => ['/bin', '/usr/bin' ],
     refreshonly => true,
   }
 }
