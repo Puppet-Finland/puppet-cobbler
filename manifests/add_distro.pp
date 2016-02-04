@@ -23,6 +23,12 @@ define cobbler::add_distro (
     initrd  => "${::cobbler::distro_path}/${distro}/${initrd}",
     require => [ Service['cobbler'], Service['httpd'] ],
   }
+  file { "${::cobbler::config::distro_path}/${distro}":
+    ensure  => 'link',
+    target  => "${::cobbler::config::webroot}/links/${distro}",
+    require => Cobblerdistro[$distro],
+  }
+
   $defaultrootpw = $::cobbler::defaultrootpw
   if ($include_kickstart) {
     file { "${::cobbler::distro_path}/kickstarts/${distro}.ks":

@@ -11,6 +11,9 @@ define cobbler::del_distro (){
     destdir => $cobbler::distro_path,
     require => [ Service['cobbler'], Service['httpd'] ],
   }
+  file { "${::cobbler::config::webroot}/links/${distro}":
+    ensure  => 'absent',
+  }
   file { "${cobbler::distro_path}/kickstarts/${distro}.ks":
     ensure  => absent,
   }
