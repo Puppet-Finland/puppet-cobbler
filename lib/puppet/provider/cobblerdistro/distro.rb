@@ -170,6 +170,7 @@ Puppet::Type.type(:cobblerdistro).provide(:distro) do
     self.comment    = @resource.should(:comment)    unless @resource[:comment].nil?    or self.comment    == @resource.should(:comment)
     self.breed      = @resource.should(:breed)      unless @resource[:breed].nil?      or self.breed      == @resource.should(:breed)
     self.os_version = @resource.should(:os_version) unless @resource[:os_version].nil? or self.os_version == @resource.should(:os_version)
+    self.ks_meta    = @resource.should(:ks_meta)    unless @resource[:ks_meta].nil?    or self.os_version == @resource.should(:ks_meta)
 
     # final sync
     cobbler('sync')
