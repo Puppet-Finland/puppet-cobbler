@@ -43,6 +43,12 @@
 #   Which DNS deamon to manage - 'bind' or 'dnsmasq'. If 'dnsmasq', then
 #   dnsmasq has to be used for DHCP too.
 #
+# [*dns_forward_zones*]
+#   An array of forward zones (e.g. ['domain.com']) to manage. Defaults to [].
+#
+# [*dns_reverse_zones*]
+#   An array of reverse zones (e.g. ['192.168.99']) to manage. Defaults to [].
+#
 # [*manage_tftpd*]
 #   Type: bool, default: true
 #   Wether or not to manage TFTP daemon.
@@ -158,6 +164,8 @@ class cobbler (
   $nameservers        = [ '8.8.8.8', '8.8.4.4' ],
   $dhcp_interfaces    = [ 'eth0' ],
   $dhcp_subnets       = undef,
+  $dns_forward_zones  = [],
+  $dns_reverse_zones  = [],
   $defaultrootpw      = 'bettergenerateityourself',
   $allow_access       = $::cobbler::params::allow_access,
   $purge_distro       = false,
@@ -216,6 +224,8 @@ class cobbler (
     nameservers        => $nameservers,
     dhcp_interfaces    => $dhcp_interfaces,
     dhcp_subnets       => $dhcp_subnets,
+    dns_forward_zones  => $dns_forward_zones,
+    dns_reverse_zones  => $dns_reverse_zones,
     defaultrootpw      => $defaultrootpw,
     allow_access       => $allow_access,
     default_kickstart  => $default_kickstart,

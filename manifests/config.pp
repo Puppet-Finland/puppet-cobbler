@@ -18,6 +18,8 @@ class cobbler::config
   $nameservers,
   $dhcp_interfaces,
   $dhcp_subnets,
+  $dns_forward_zones,
+  $dns_reverse_zones,
   $defaultrootpw,
   $allow_access,
   $default_kickstart,
@@ -34,6 +36,8 @@ class cobbler::config
   validate_re($dns_option, ['^bind$', '^dnsmasq$'])
   validate_re($tftpd_option, ['^in_tftpd$'])
   validate_string($auth_module)
+  validate_array($dns_forward_zones)
+  validate_array($dns_reverse_zones)
 
   if $dhcp_subnets { validate_array($dhcp_subnets) }
 
