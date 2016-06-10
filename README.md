@@ -14,7 +14,7 @@
     * [Cobbler repo](#cobblerrepo)
     * [Cobbler profile](#cobblerprofile)
     * [Cobbler system](#cobblersystem)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. Examples(#examples)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
     * [Contributing](#contributing)
@@ -179,9 +179,23 @@ Typical definition looks like:
 ```
 
 
-## Reference
+## Examples
 
-TODO
+All of the below examples are for Hiera.
+
+## Managing DNS zones
+
+    cobbler::dns_forward_zones:
+      - 'internal.domain.com'
+    cobbler::dns_reverse_zones:
+      - '10.249.0'
+    
+    cobbler::zones:
+      internal.domain.com:
+        records:
+          - 'puppet.internal.domain.com. IN   A   10.249.0.1;'
+          - 'www.internal.domain.com.    IN   A   10.249.0.2;'
+
 
 ## Limitations
 

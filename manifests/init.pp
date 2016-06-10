@@ -137,6 +137,8 @@
 #   A hash of cobbler::kickstart resources to realize.
 # [*snippets*]
 #   A hash of cobbler::snippet resources to realize.
+# [*zones*]
+#   A hash of cobbler::zone resources to realize.
 #
 # === Examples
 #
@@ -183,7 +185,8 @@ class cobbler (
   $profiles           = {},
   $systems            = {},
   $kickstarts         = {},
-  $snippets           = {}
+  $snippets           = {},
+  $zones              = {}
 
 ) inherits cobbler::params {
 
@@ -194,6 +197,7 @@ class cobbler (
   validate_hash($systems)
   validate_hash($kickstarts)
   validate_hash($snippets)
+  validate_hash($zones)
   validate_bool($manage_dhcp)
   validate_re($dhcp_option, ['^isc$', '^dnsmasq$'])
 
@@ -270,6 +274,7 @@ class cobbler (
   create_resources(cobblersystem,  $systems,  $defaults)
   create_resources('cobbler::kickstart', $kickstarts)
   create_resources('cobbler::snippet', $snippets)
+  create_resources('cobbler::zone', $zones)
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp and $dhcp_option == 'isc' {
