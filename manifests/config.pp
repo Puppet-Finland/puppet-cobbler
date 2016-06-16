@@ -18,6 +18,8 @@ class cobbler::config
   $nameservers,
   $dhcp_interfaces,
   $dhcp_subnets,
+  Variant[String,Array[String]] $dns_listen_address,
+  Variant[String,Array[String]] $dns_allow_query,
   $dns_forward_zones,
   $dns_reverse_zones,
   $defaultrootpw,
@@ -76,6 +78,23 @@ class cobbler::config
     require => Class['::cobbler::install'],
     notify  => Class['::cobbler::service'],
   }
+
+  if is_array($dns_listen_address) {
+    $dns_listen_addresses = join($dns_listen_address, ";")
+  } else {
+    $dns_listen_addresses = $dns_listen_address
+  }
+  if is_array($dns_allow_query) {
+    $dns_allow_queries = join($dns_allow_query, ";")
+  } else {
+    $dns_allow_queries = $dns_allow_query
+  }
+
+  file { '/etc/cobbler/named.template':
+    content => template('cobbler/named.template.erb'),
+    require => Class['::cobbler::install'],
+    notify  => Class['::cobbler::service'],
+  }    
 
   file { '/etc/cobbler/modules.conf':
     content => template('cobbler/modules.conf.erb'),

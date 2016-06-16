@@ -43,6 +43,14 @@
 #   Which DNS deamon to manage - 'bind' or 'dnsmasq'. If 'dnsmasq', then
 #   dnsmasq has to be used for DHCP too.
 #
+# [*dns_listen_address*]
+#   A string or an array of strings with IP address(es) on which the DNS server 
+#   listens for requests. Defaults to 'any'.
+#
+# [*dns_allow_query*]
+#   A string or an array of strings of IP address(es) from which queries are
+#   allowed. Defaults to 'localhost'.
+#
 # [*dns_forward_zones*]
 #   An array of forward zones (e.g. ['domain.com']) to manage. Defaults to [].
 #
@@ -166,6 +174,8 @@ class cobbler (
   $nameservers        = [ '8.8.8.8', '8.8.4.4' ],
   $dhcp_interfaces    = [ 'eth0' ],
   $dhcp_subnets       = undef,
+  $dns_listen_address = 'any',
+  $dns_allow_query    = 'localhost',
   $dns_forward_zones  = [],
   $dns_reverse_zones  = [],
   $defaultrootpw      = 'bettergenerateityourself',
@@ -228,6 +238,8 @@ class cobbler (
     nameservers        => $nameservers,
     dhcp_interfaces    => $dhcp_interfaces,
     dhcp_subnets       => $dhcp_subnets,
+    dns_listen_address => $dns_listen_address,
+    dns_allow_query    => $dns_allow_query,
     dns_forward_zones  => $dns_forward_zones,
     dns_reverse_zones  => $dns_reverse_zones,
     defaultrootpw      => $defaultrootpw,
