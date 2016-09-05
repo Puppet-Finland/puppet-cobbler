@@ -94,7 +94,7 @@ class cobbler::config
     content => template('cobbler/named.template.erb'),
     require => Class['::cobbler::install'],
     notify  => Class['::cobbler::service'],
-  }    
+  }
 
   file { '/etc/cobbler/modules.conf':
     content => template('cobbler/modules.conf.erb'),
