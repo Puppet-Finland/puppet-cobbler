@@ -74,6 +74,10 @@ end %>;
     ## flat configuration
 # group for Cobbler DHCP tag: $dhcp_tag
 group {
+    #if not dhcp_tag == 'default':
+    option domain-name "$dhcp_tag";
+    #end if
+
         #for mac in $dhcp_tags[$dhcp_tag].keys():
             #set iface = $dhcp_tags[$dhcp_tag][$mac]
     host $iface.name {
