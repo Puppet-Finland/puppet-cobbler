@@ -36,6 +36,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :hostname         => member['hostname'],
         :gateway          => member['gateway'],
         :netboot          => member['netboot_enabled'].to_s,
+        :dhcp_tag         => member['dhcp_tag'],
         :comment          => member['comment'],
         :power_type       => member['power_type'],
         :virt_auto_boot   => member['virt_auto_boot'].to_s.sub(/^1$/,'true').sub(/^0$/,'false'),
@@ -161,6 +162,12 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     @property_hash[:kernel_options]=(value)
   end
 
+  # sets dhcp-tag
+  def dhcp_tag=(value)
+    cobbler('system', 'edit', '--name=' + @resource[:name], '--dhcp-tag=' + value)
+    @property_hash[:dhcp_tag]=(value)
+  end
+
   # sets comment
   def comment=(value)
     cobbler('system', 'edit', '--name=' + @resource[:name], '--comment=' + value)
@@ -226,6 +233,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     self.hostname         = @resource.should(:hostname)         unless @resource[:hostname].nil?         or self.hostname         == @resource.should(:hostname)
     self.gateway          = @resource.should(:gateway)          unless @resource[:gateway].nil?          or self.gateway          == @resource.should(:gateway)
     self.netboot          = @resource.should(:netboot)          unless @resource[:netboot].nil?          or self.netboot          == @resource.should(:netboot)
+    self.dhcp_tag         = @resource.should(:dhcp_tag)         unless @resource[:dhcp_tag].nil?         or self.dhcp_tag         == @resource.should(:dhcp_tag)
     self.comment          = @resource.should(:comment)          unless @resource[:comment].nil?          or self.comment          == @resource.should(:comment)
     self.kernel_options   = @resource.should(:kernel_options)   unless @resource[:kernel_options].nil?   or self.kernel_options   == @resource.should(:kernel_options)
     self.power_type       = @resource.should(:power_type)       unless @resource[:power_type].nil?       or self.power_type       == @resource.should(:power_type)

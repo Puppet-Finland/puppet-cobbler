@@ -143,6 +143,10 @@ cobblersystem { 'test.domain.com':
     newvalues(:true, :false)
   end
 
+  newproperty(:dhcp_tag) do
+    desc 'DHCP tag of this system.'
+  end
+
   newproperty(:comment) do
     desc 'Human readable description of this system.'
   end
