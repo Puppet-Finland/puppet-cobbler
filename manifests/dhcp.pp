@@ -27,6 +27,7 @@ class cobbler::dhcp
 
   service { 'dhcpd':
     ensure  => running,
+    enable  => true,
     name    => $::cobbler::params::dhcp_service,
     require => [
       File['/etc/cobbler/dhcp.template'],
