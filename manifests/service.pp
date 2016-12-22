@@ -27,4 +27,14 @@ class cobbler::service
     path        => ['/bin', '/usr/bin' ],
     refreshonly => true,
   }
+
+  if str2bool($::has_systemd) {
+    # Ensure that "cobbler sync" gets run at boot. Without this dhcpd et al
+    # will not get started.
+    systemd::service_override { 'cobbler-cobblersync':
+      ensure        => 'present',
+      service_name  => 'cobblersync',
+      template_path => 'cobbler/cobblersync.service.erb',
+    }
+  }
 }

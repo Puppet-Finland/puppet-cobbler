@@ -1,0 +1,21 @@
+### THIS FILE IS MANAGED BY PUPPET. ANY MANUAL CHANGES WILL GET OVERWRITTEN.
+
+[Unit]
+Description=cobbler sync
+After=cobblerd.service
+Requires=cobblerd.service
+
+[Service]
+ExecStart=/usr/bin/cobbler sync
+Type=simple
+
+# Even though this service is started after cobblerd.service, cobblerd is 
+# actually _not_ ready to serve connections immediately after startup. This 
+# means that "cobbler sync" may fail on the first try; hence the Restart option 
+# is needed.
+#
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
