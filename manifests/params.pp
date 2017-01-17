@@ -9,7 +9,7 @@ class cobbler::params {
       $package_name        = 'cobbler'
       $package_name_web    = 'cobbler-web'
       $tftp_package        = 'tftp-server'
-      $syslinux_package    = 'syslinux'
+      $syslinux_package    = ['syslinux','syslinux-tftpboot']
       $dhcp_package        = 'dhcp'
       $dhcp_service        = 'dhcpd'
       $http_config_prefix  = '/etc/httpd/conf.d'
